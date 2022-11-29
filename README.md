@@ -1,13 +1,13 @@
 # Group8
 
 ## Dependencies
-
+```
 To use our python script, some dependencies are necessary:
 -Python
 -Pip
 -Paramiko: pip install paramiko
 -ConfigParser: pip install configparser
-
+```
 
 ## Getting started
 
