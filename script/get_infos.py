@@ -1,6 +1,6 @@
 import paramiko;
 import sys
-from six.moves import configparser 
+import configparser 
 
 config = configparser.RawConfigParser()   
 config.read("config.txt")
@@ -21,4 +21,13 @@ output = stdout.read().decode("utf-8")
 memorylist = output.splitlines()[0].split()
 del memorylist[0]
 
+#then, we get the username with the whoami command
+_, stdout, stderr = client.exec_command("whoami")
+output = stdout.read().decode("utf-8")
+whoami = output.splitlines(0)[0]
+print(whoami)
 
+_, stdout, stderr = client.exec_command("whoami")
+output = stdout.read().decode("utf-8")
+whoami = output.splitlines(0)[0]
+print(whoami)
