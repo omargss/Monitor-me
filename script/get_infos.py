@@ -1,12 +1,13 @@
 import paramiko;
+import sys
+from six.moves import configparser 
 
-# aelis / 118-TgBT-1407 / 22118
-
-hostname = "gauvain.telecomste.net"
-port = 22117
-username = "grudu"
-password = "117-TgBT-0216"
-
+config = configparser.RawConfigParser()   
+config.read("config.txt")
+hostname = config['settings']['hostname']
+port = config['settings']['port']
+username = config['settings']['username']
+password = config['settings']['password']
 
 client = paramiko.SSHClient()
 client.load_system_host_keys()
@@ -19,4 +20,5 @@ _, stdout, stderr = client.exec_command("free | grep -n Mem -")
 output = stdout.read().decode("utf-8")
 memorylist = output.splitlines()[0].split()
 del memorylist[0]
-print(memorylist)
+
+
