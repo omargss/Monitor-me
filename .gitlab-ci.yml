@@ -17,7 +17,7 @@ test:
   stage: test
   script:
   - echo "Running unit tests [NOT IMPLEMENTED YET]"
-  #- python3 -m unittest file.py
+  - python3 -m unittest test_get_infos.py
 
 
 
