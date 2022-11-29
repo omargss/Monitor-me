@@ -12,12 +12,12 @@ class Process():
 
     user = ""
     pid = 0
-    cpu = 0
+    memory = 0
     start_time = ""
     command = ""
 
 config = configparser.RawConfigParser()   
-config.read("config.txt")
+config.read("./config.txt")
 hostname = config['settings']['hostname']
 port = config['settings']['port']
 username = config['settings']['username']
@@ -40,13 +40,13 @@ output = stdout.read().decode("utf-8")
 whoami = output.splitlines(0)[0]
 
 list_process = []
-#then, we get informations for processes with (USER/PID/CPU/MEM/VSZ/RSS/TTY/STAT/START TIME / COMMAND)
+
+#then, we get informations for processes with (USER/PID/MEM/START TIME/COMMAND)
 _, stdout, stderr = client.exec_command("ps -aux | sort -k 4 -r | grep -wv USER | head -10 ")
 output = stdout.read().decode("utf-8")
 for line in output.splitlines():
     line = line.split()
-    print(line)
-    process = Process(line[0],line[1],line[3],line[9], line[10])
+    process = Process(line[0],line[1],line[3],line[8] +"-"+ line[9], (" ").join(line[10:len(line)]))
     list_process.append(process)
 
 for i in range(len(list_process)):
