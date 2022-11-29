@@ -1,9 +1,7 @@
 import unittest
 import configparser
 
-#TODO : changer processList (adapter à ce que mathys à fait)
-
-from get_infos import memorylist, whoami, processList
+from get_infos import memorylist, whoami, list_process
 
 config = configparser.RawConfigParser() 
 config.read("config.txt")
@@ -17,14 +15,13 @@ class get_infos_Test_Case(unittest.TestCase):
 
     def test_memory(self):
         self.assertEqual(len(memorylist),6)
-        i=0
-        while(i<6):
+        for i in range(6):
             self.assertNotEqual(memorylist[i],0)
-            i+=1
     
     def test_process(self):
-        i=0
-        while(i<len(processList)):
-            self.assertNotEqual(processList[i].name,'')
-            self.assertNotEqual(processList[i].memory,0)
-            self.assertNotEqual(processList[i].pid, "")
+        for i in range(len(list_process)):
+            self.assertNotEqual(list_process[i].user,'')
+            self.assertNotEqual(list_process[i].memory,0)
+            self.assertNotEqual(list_process[i].pid, 0)
+            self.assertNotEqual(list_process[i].start_time, "")
+            self.assertNotEqual(list_process[i].command, "")
