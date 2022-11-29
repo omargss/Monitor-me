@@ -1,0 +1,50 @@
+# Template for Compilation & Tests in GitLab CI
+image: python:3.8-alpine
+
+stages:
+  - compile
+  - test
+#  - lint
+#  - coverage
+#  - deploy
+
+compile:
+  stage: compile
+  script:
+  - echo "Here goes my compile command [NOT IMPLEMENTED YET]"
+
+test:
+  stage: test
+  script:
+  - echo "Running unit tests [NOT IMPLEMENTED YET]"
+  #- python3 -m unittest file.py
+
+
+
+
+# Step below are not useful for the moment
+
+#staging:
+#  stage: deploy
+#  script:
+#  - echo "Deploying application on production environnement [NOT IMPLEMENTED YET]"
+#  only:
+#  - master
+
+#production:
+#  stage: deploy
+#  script:
+#  - echo "Deploying application on pre-production environnement [NOT IMPLEMENTED YET]"
+#  only:
+#  - develop
+
+#lint:
+#  stage: lint
+#  script:
+#  - echo "Checking for code quality [NOT IMPLEMENTED YET]"
+
+#coverage:
+#  stage: coverage
+#  script:
+#  - echo "Checking for code coverage level [NOT IMPLEMENTED YET]"
+
