@@ -9,6 +9,7 @@ username = config['settings']['username']
 
 
 class get_infos_Test_Case(unittest.TestCase):
+    # Test de la connexion avec whoami
     def test_connexion(self):
         self.assertEqual(whoami,username)
 
