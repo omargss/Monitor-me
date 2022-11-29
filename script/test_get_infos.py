@@ -1,7 +1,17 @@
 import unittest
-from get_infos import memorylist
+import configparser
+
+from get_infos import memorylist, whoami
+
+config = configparser.RawConfigParser() 
+config.read("config.txt")
+username = config['settings']['username']
+
 
 class get_infos_Test_Case(unittest.TestCase):
+    def test_connexion(self):
+        self.assertEqual(whoami,username)
+
     def test_memory(self):
         self.assertEqual(len(memorylist),6)
         i=0
