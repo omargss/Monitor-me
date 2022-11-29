@@ -20,11 +20,3 @@ output = stdout.read().decode("utf-8")
 memorylist = output.splitlines()[0].split()
 del memorylist[0]
 print(memorylist)
-
-# First, we get the memory informations and stock it in an array with, in order: Total, used, free, shared, buff/cache, available
-_, stdout, stderr = client.exec_command("free | grep -n Mem -")
-output = stdout.read().decode("utf-8")
-memorylist = output.splitlines()[0].split()
-del memorylist[0]
-print(memorylist)
-
