@@ -1,13 +1,15 @@
 # Template for Compilation & Tests in GitLab CI
 image: python:3.8-alpine
 
+# include all the before script in a requirement file
 before_script:
   - python --version
-
+  - pip install -r requirements.txt
+  
 stages:
   - compile
+  - pylint
   - test
-#  - lint
 #  - coverage
 #  - deploy
 
@@ -15,6 +17,11 @@ compile:
   stage: compile
   script:
   - echo "Here goes my compile command [NOT IMPLEMENTED YET]"
+
+pylint:
+  stage : pylint
+  script: pylint script/
+  #- echo "Checking for code quality [NOT IMPLEMENTED YET]"
 
 test:
   stage: test
@@ -44,7 +51,6 @@ test:
 #lint:
 #  stage: lint
 #  script:
-#  - echo "Checking for code quality [NOT IMPLEMENTED YET]"
 
 #coverage:
 #  stage: coverage
