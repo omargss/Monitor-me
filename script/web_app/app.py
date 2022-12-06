@@ -1,21 +1,19 @@
-# Run this app with `python app.py` and
-# visit http://127.0.0.1:8050/ in your web browser.
-import paramiko;
-import sys
-import configparser 
-import functions
+""" Python web app """
+import configparser
+import paramiko
 from dash import Dash, html, dcc
 import plotly.express as px
-import plotly.graph_objects as go
 import pandas as pd
+import functions
+import plotly.graph_objects as go
 
 app = Dash(__name__)
 
 # assume you have a "long-form" data frame
 # see https://plotly.com/python/px-arguments/ for more options
-
-config = configparser.RawConfigParser()   
-config.read("config.txt")
+""" SERVER CONNECTION """
+config = configparser.RawConfigParser()
+config.read("../config.txt")
 hostname = config['settings']['hostname']
 port = config['settings']['port']
 username = config['settings']['username']
@@ -27,26 +25,38 @@ client.set_missing_host_key_policy(paramiko.AutoAddPolicy)
 client.connect(hostname = hostname, port=port, username=username, password=password)
 
 memorylist = functions.get_memory(client)
-
+""" MEMORY CHART """
 data = {
         'Memory_Type': ['Total', 'Used', 'Free', 'Shared','Buff/Cache','Available'],
         'Memory': memorylist
         }
 df = pd.DataFrame(data)
-fig = px.bar(df, x="Memory_Type", y="Memory", color="Memory_Type", title="Usage of the memory of the remote server", barmode='stack')
-fig.update_layout(xaxis_title='Name')
-
+memoryGraph = px.bar(df, x="Memory_Type", y="Memory",
+color="Memory_Type", title="Usage of the memory of the remote server", barmode='stack')
+memoryGraph.update_layout(xaxis_title='Name')
+""" LOGS CHART """
+logs = functions.getAccessLogs(client)
+labels = []
+values = []
+i=0
+for log in logs:
+    labels.append(log.name)
+    values.append(log.numberOfSearchs)
+    i+=1
+logPieChart = go.Figure(data=[go.Pie(labels=labels, values=values)])
 
 app.layout = html.Div(children=[
-    html.H1(children='Hello Dash'),
-
-    html.Div(children='''
-        Dash: A web application framework for your data.
-    '''),
+    html.H1(children='Monitoring web application'),
+    html.H2(children='Memory'),
 
     dcc.Graph(
-        id='bar chart 1',
-        figure=fig
+        id='Memory Graph',
+        figure=memoryGraph
+    ),
+        html.H2(children='Logs'),
+        dcc.Graph(
+        id='Pie Logs chart',
+        figure=logPieChart
     )
 ])
 
