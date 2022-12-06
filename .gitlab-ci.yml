@@ -9,8 +9,9 @@ before_script:
 stages:
   - compile
   - pylint
+  - coverage
   - test
-#  - coverage
+
 #  - deploy
 
 compile:
@@ -20,9 +21,20 @@ compile:
 
 pylint:
   stage : pylint
-  script: pylint script/
+  script : pylint script/
   #- echo "Checking for code quality [NOT IMPLEMENTED YET]"
 
+coverage :
+  stage : coverage
+  script : 
+    if [(coverage run -m unittest -s script/ report) == (coverage run -m unittest -s script/ report --fail-under=70)]; then 
+      echo "Coverage is ok";
+    else 
+      echo "Coverage is not ok";
+      exit 1;
+    fi
+
+  
 test:
   stage: test
   script:
