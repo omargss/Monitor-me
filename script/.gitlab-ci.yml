@@ -20,7 +20,7 @@ test:
   stage: test
   script:
   - echo "Running unit tests [NOT IMPLEMENTED YET]"
-  - python3 -m unittest script/test_get_infos.py
+  - python3 -m unittest test_get_infos.py
 
 
 
@@ -50,4 +50,5 @@ test:
 #  stage: coverage
 #  script:
 #  - echo "Checking for code coverage level [NOT IMPLEMENTED YET]"
+
 
