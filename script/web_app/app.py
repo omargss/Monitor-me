@@ -24,28 +24,34 @@ client.load_system_host_keys()
 client.set_missing_host_key_policy(paramiko.AutoAddPolicy)
 client.connect(hostname = hostname, port=port, username=username, password=password)
 
-memorylist = functions.get_memory(client)
 """ MEMORY CHART """
-data = {
+memorylist = functions.get_memory(client)
+memorydata = {
         'Memory_Type': ['Total', 'Used', 'Free', 'Shared','Buff/Cache','Available'],
         'Memory': memorylist
         }
-df = pd.DataFrame(data)
+df = pd.DataFrame(memorydata)
 memoryGraph = px.bar(df, x="Memory_Type", y="Memory",
 color="Memory_Type", title="Usage of the memory of the remote server", barmode='stack')
 memoryGraph.update_layout(xaxis_title='Name')
 """ LOGS CHART """
 logs = functions.getAccessLogs(client)
-labels = []
-values = []
-i=0
+memory_labels = []
+memory_values = []
 for log in logs:
-    labels.append(log.name)
-    values.append(log.numberOfSearchs)
-    i+=1
-logPieChart = go.Figure(data=[go.Pie(labels=labels, values=values)])
-
-app.layout = html.Div(children=[
+    memory_labels.append(log.name)
+    memory_values.append(log.numberOfSearchs)
+logPieChart = go.Figure(data=[go.Pie(labels=memory_labels, values=memory_values)])
+""" PROCESSES CHART """
+processlist = functions.getProcessInfos(client)
+process_labels = []
+process_values = []
+for process in processlist:
+    process_labels.append(process.command)
+    process_values.append(10)
+processPieChart = go.Figure(data=[go.Pie(labels=process_labels, values=process_values)])
+""" WEB DISPLAY """
+app.layout = html.Div(children= [
     html.H1(children='Monitoring web application'),
     html.H2(children='Memory'),
 
@@ -53,11 +59,16 @@ app.layout = html.Div(children=[
         id='Memory Graph',
         figure=memoryGraph
     ),
-        html.H2(children='Logs'),
-        dcc.Graph(
+    html.H2(children='Logs'),
+    dcc.Graph(
         id='Pie Logs chart',
         figure=logPieChart
-    )
+    ),
+    html.H2(children='Processes'),
+    dcc.Graph(
+        id='Pie process chart',
+        figure=processPieChart
+    ),
 ])
 
 if __name__ == '__main__':
