@@ -34,7 +34,6 @@ def get_error_logs():
     warn_list = []
     for line in output.splitlines():
         warn_list.append(line)
-    
     cmd = 'cat /var/log/apache2/error.log | grep "emerg"'
     _, stdout, _ = client.exec_command(cmd)
     output = stdout.read().decode("utf-8")
@@ -78,6 +77,3 @@ def get_error_logs():
         debug_list.append(line)
 
     return warn_list, emerg_list,alert_list, crit_list, error_list, notice_list,debug_list
-
-warnlist = get_error_logs()
-print(len(warnlist))
