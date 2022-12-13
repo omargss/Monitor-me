@@ -1,6 +1,10 @@
+""" Module functions"""
+# pylint: disable=invalid-name
+# pylint: disable=too-few-public-methods
 # Class Process used to store processes
 class Process:
-    def __init__(self, u, p, c, m, s, co):
+    """ Process class"""
+    def __init__(self, u, p, c, m, s, co): # pylint: disable=too-many-arguments
         self.user = u
         self.cpu = c
         self.pid = p
@@ -17,10 +21,8 @@ class Process:
 
 
 # Class WebPage used to store web pages
-""" Class WebPage """
-
-
 class WebPage:
+    """ Class WebPage """
     def __init__(self, name, number):
         self.name = name
         self.numberOfSearchs = number
@@ -30,13 +32,13 @@ class WebPage:
     def __eq__(self, other):
         return self.name == other.name and self.numberOfSearchs == other.numberOfSearchs
 
-
 def get_memory(client):
-    _, stdout, stderr = client.exec_command("free | grep -n Mem -")
+    """ get memory function """
+    _, stdout, _ = client.exec_command("free | grep -n Mem -")
     output = stdout.read().decode("utf-8")
     memorylist = output.splitlines()[0].split()
     del memorylist[0]
-    for i in range(len(memorylist)):
+    for i in range(len(memorylist)): # pylint: disable=consider-using-enumerate
         memorylist[i] = int(memorylist[i])
     return memorylist
 
@@ -63,8 +65,9 @@ def get_access_logs(client):
 
 
 def get_process_infos(client):
+    """ get process infos function """
     list_process = []
-    _, stdout, stderr = client.exec_command(
+    _, stdout, _ = client.exec_command(
         "ps -aux | sort -k 3 -r | grep -wv USER | head -n 10"
     )
     output = stdout.read().decode("utf-8")
@@ -83,16 +86,15 @@ def get_process_infos(client):
 
 
 def get_biggest_files(client):
+    """ get biggest files function """
     list_files = []
     list_size = []
-    _, stdout, stderr = client.exec_command(
-        "du -ah 2>/dev/null | sort -n -r | head -n 10"
+    _, stdout, _ = client.exec_command(
+        "du -ah 2>/dev/null | sort -n -r | head -n 25 | sort -n"
     )
     output = stdout.read().decode("utf-8")
     for line in output.splitlines():
         line = line.split()
-        print(line[0])
-        print(line[1])
         list_files.append(line[0])
         list_size.append(line[1])
     return list_files, list_size
