@@ -1,0 +1,5 @@
+[settings]
+hostname = gauvain.telecomste.net
+port = 22117
+username = grudu
+password = 117-TgBT-0216
