@@ -1,4 +1,5 @@
 """ Python web app """
+# pylint: disable=pointless-string-statement
 import configparser
 import paramiko
 from dash import Dash, html, dcc
@@ -33,6 +34,12 @@ df = pd.DataFrame(memorydata)
 memoryGraph = px.bar(df, x="Memory_Type", y="Memory",
 color="Memory_Type", title="Usage of the memory of the remote server", barmode='stack')
 memoryGraph.update_layout(xaxis_title='Name')
+""" FILES SIZE CHART """
+list_files= []
+list_size = []
+list_files,list_size = functions.get_biggest_files(client)
+sizedata = go.Bar(x=list_size,y=list_files)
+MemoryBarChart = go.Figure(data=sizedata)
 """ PROCESSES CHART """
 processlist = functions.get_process_infos(client)
 process_labels = []
@@ -52,17 +59,18 @@ for log in logs:
 logPieChart = go.Figure(data=[go.Pie(labels=memory_labels, values=memory_values,
 title="Pie chart representing logs access")])
 
-list1= []
-list2 = []
-list1,list2 = functions.get_biggest_files(client)
 """ WEB DISPLAY """
 app.layout = html.Div(children= [
     html.H1(children='Monitoring web application'),
     html.H2(children='Memory'),
-
     dcc.Graph(
-        id='Memory Graph',
+        id='Memory pie chart',
         figure=memoryGraph
+    ),
+    html.H2(children='Biggest files'),
+    dcc.Graph(
+        id='File size graph',
+        figure=MemoryBarChart
     ),
     html.H2(children='Processes'),
     dcc.Graph(
