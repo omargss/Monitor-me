@@ -9,7 +9,7 @@ before_script:
   - pip install -r requirements.txt 
   - pip install dash
   - pip install pandas
-  
+
   
 stages:
   - compile
@@ -19,10 +19,10 @@ stages:
 
 #  - deploy
 
-compile:
-  stage: compile
-  script:
-  - echo "Here goes my compile command [NOT IMPLEMENTED YET]"
+#compile:
+#  stage: compile
+#  script:
+#  - echo "Here goes my compile command [NOT IMPLEMENTED YET]"
 
 pylint:
   stage : pylint
