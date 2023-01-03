@@ -10,3 +10,4 @@
 # multiple time (only on the command line, not in the configuration file where
 # it should appear only once).
 disable=R0913 #too-many-arguments
+        C0301 #line-too-long
