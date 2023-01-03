@@ -6,7 +6,7 @@ before_script:
   - python --version
   - pip install --upgrade pip
   - pip install -r requirements.txt
-  - pip install gcc
+  - apk add --no-cache --virtual=build-dependencies g++ gcc make libffi-dev 
   
 stages:
   - compile
