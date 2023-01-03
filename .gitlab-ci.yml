@@ -3,10 +3,10 @@ image: python:3.8-alpine
 
 # include all the before script in a requirement file
 before_script:
+  - python --version
   - pip install --upgrade pip
-  # - pip install wheel setuptools pip --upgrade
-  # - pip3 install wheel setuptools pip --upgrade
   - pip install -r requirements.txt
+  - pip install gcc
   
 stages:
   - compile
