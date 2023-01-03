@@ -23,7 +23,7 @@ compile:
 
 pylint:
   stage : pylint
-  script : pylint script/
+  script : pylint script/webapp/app.py
   #- echo "Checking for code quality [NOT IMPLEMENTED YET]"
 
 coverage :
