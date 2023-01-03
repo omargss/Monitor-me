@@ -10,6 +10,7 @@ before_script:
   - pip install dash
   - pip install pandas
   
+  
 stages:
   - compile
   - pylint
