@@ -5,6 +5,8 @@ image: python:3.8-alpine
 before_script:
   - python --version
   - pip install --upgrade pip
+  - pip install cffi
+  - pip install --upgrade cffi==1.14.0
   - pip install -r requirements.txt
   
 stages:
