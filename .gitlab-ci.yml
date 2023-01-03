@@ -41,8 +41,6 @@ test:
   - python3 -m unittest test_get_infos.py
 
 
-
-
 # Step below are not useful for the moment
 
 #staging:
