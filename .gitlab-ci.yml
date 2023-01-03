@@ -1,5 +1,5 @@
 # Template for Compilation & Tests in GitLab CI
-image: python:3.8-alpine
+image: nickgryg/alpine-pandas
 
 # include all the before script in a requirement file
 before_script:
