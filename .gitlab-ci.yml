@@ -7,18 +7,12 @@ before_script:
   - python --version
   - pip install --upgrade pip
   - pip install -r requirements.txt 
-  - pip install dash
-  # - pip install pandas
-#  -pip install coverage
-
   
 stages:
   - compile
   - pylint
   - coverage
   - test
-
-#  - deploy
 
 compile:
   stage: compile
@@ -27,10 +21,8 @@ compile:
 
 pylint:
   stage : pylint
-  script : 
-  - pylint script/web_app/app.py
-  #- echo "Checking for code quality [NOT IMPLEMENTED YET]"
-
+  script : pylint script/web_app/app.py
+ 
 coverage :
   stage : coverage
   script : 
