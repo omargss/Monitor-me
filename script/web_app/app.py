@@ -23,22 +23,23 @@ password = config['settings']['password']
 client = paramiko.SSHClient()
 client.load_system_host_keys()
 client.set_missing_host_key_policy(paramiko.AutoAddPolicy)
-client.connect(hostname = hostname, port=port, username=username, password=password)
+client.connect(hostname=hostname, port=port,
+               username=username, password=password)
 """ MEMORY CHART """
 memorylist = functions.get_memory(client)
 memorydata = {
-        'Memory_Type': ['Total', 'Used', 'Free', 'Shared','Buff/Cache','Available'],
-        'Memory': memorylist
-        }
+    'Memory_Type': ['Total', 'Used', 'Free', 'Shared', 'Buff/Cache', 'Available'],
+    'Memory': memorylist
+}
 df = pd.DataFrame(memorydata)
 memoryGraph = px.bar(df, x="Memory_Type", y="Memory",
-color="Memory_Type", title="Usage of the memory of the remote server", barmode='stack')
+                     color="Memory_Type", title="Usage of the memory of the remote server", barmode='stack')
 memoryGraph.update_layout(xaxis_title='Name')
 """ FILES SIZE CHART """
-list_files= []
+list_files = []
 list_size = []
-list_files,list_size = functions.get_biggest_files(client)
-sizedata = go.Bar(x=list_size,y=list_files)
+list_files, list_size = functions.get_biggest_files(client)
+sizedata = go.Bar(x=list_size, y=list_files)
 MemoryBarChart = go.Figure(data=sizedata)
 """ PROCESSES CHART """
 processlist = functions.get_process_infos(client)
@@ -46,9 +47,9 @@ process_labels = []
 process_values = []
 for process in processlist:
     process_labels.append(process.command)
-    process_values.append(1) #process.cpu
+    process_values.append(1)  # process.cpu
 processPieChart = go.Figure(data=[go.Pie(labels=process_labels, values=process_values,
-title="Pie chart representing cpu usage by processes")])
+                                         title="Pie chart representing cpu usage by processes")])
 """ LOGS CHART """
 logs = functions.get_access_logs(client)
 memory_labels = []
@@ -57,10 +58,13 @@ for log in logs:
     memory_labels.append(log.name)
     memory_values.append(log.numberOfSearchs)
 logPieChart = go.Figure(data=[go.Pie(labels=memory_labels, values=memory_values,
-title="Pie chart representing logs access")])
-
+                                     title="Pie chart representing logs access")])
+""" LOGS ERROR CHART """
+#warn_list, emerg_list, alert_list, crit_list, error_list, notice_list, debug_list = functions.get_error_logs(
+#   client)
+# print(warn_list)
 """ WEB DISPLAY """
-app.layout = html.Div(children= [
+app.layout = html.Div(children=[
     html.H1(children='Monitoring web application'),
     html.H2(children='Memory'),
     dcc.Graph(
@@ -82,6 +86,11 @@ app.layout = html.Div(children= [
         id='Pie Logs chart',
         figure=logPieChart
     ),
+    dcc.Interval(
+            id='interval-component',
+            interval=5*1000, # in milliseconds
+            n_intervals=0
+        )
 ])
 
 if __name__ == '__main__':
