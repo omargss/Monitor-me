@@ -1,13 +1,13 @@
 """ Python web app """
 # pylint: disable=pointless-string-statement
 import configparser
+import time
 import paramiko
 from dash import Dash, html, dcc
 from dash.dependencies import Input, Output
 import plotly.express as px
 import plotly.graph_objects as go
 import pandas as pd
-import time
 import functions
 
 app = Dash(__name__)
@@ -81,7 +81,7 @@ app.layout = html.Div(children=[
 ])
 @app.callback(Output('Memory_pie_chart', 'figure'),
               Input('interval-component_files', 'n_intervals'))
-def update_graph_live_4(n):
+def update_graph_live_4():
     """ MEMORY CHART """
     memorylist = functions.get_memory(client)
     memorydata = {
@@ -96,7 +96,7 @@ def update_graph_live_4(n):
 
 @app.callback(Output('File_size_graph', 'figure'),
               Input('interval-component_memory', 'n_intervals'))
-def update_graph_live_3(n):
+def update_graph_live_3():
     """ FILES SIZE CHART """
     time.sleep(2)
     list_files = []
@@ -108,7 +108,7 @@ def update_graph_live_3(n):
 
 @app.callback(Output('Pie_process_chart', 'figure'),
               Input('interval-component_process', 'n_intervals'))
-def update_graph_live_2(n):
+def update_graph_live_2():
     """ PROCESSES CHART """
     time.sleep(4)
     processlist = functions.get_process_infos(client)
@@ -122,7 +122,7 @@ def update_graph_live_2(n):
 
 @app.callback(Output('Logs_graph', 'figure'),
               Input('interval-component_logs', 'n_intervals'))
-def update_graph_live_1(n):
+def update_graph_live_1():
     """ LOGS CHART """
     time.sleep(6)
     logs = functions.get_access_logs(client)
