@@ -27,12 +27,14 @@ coverage :
   stage : coverage
   script : 
     #if [(coverage run -m unittest -s script/ report) == (coverage run -m unittest -s script/ report --fail-under=70)]; then
-    if [(coverage run -m unittest script/web_app/app.py report) == (coverage run -m unittest script/web_app/app.py report --fail-under=70)]; then 
-      echo "Coverage is ok";
-    else 
-      echo "Coverage is not ok";
-      exit 1;
-    fi
+    #if [(coverage run -m unittest script/web_app/app.py report) == (coverage run -m unittest script/web_app/app.py report --fail-under=70)]; then 
+    coverage run -m unittest script/web_app/app.py --fail-under=70
+      
+      #echo "Coverage is ok";
+    #else 
+      #echo "Coverage is not ok";
+      #exit 1;
+    #fi
 
   
 test:
