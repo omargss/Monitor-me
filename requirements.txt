@@ -1,4 +1,5 @@
 paramiko
 pylint
+pytest
 coverage
 dash
