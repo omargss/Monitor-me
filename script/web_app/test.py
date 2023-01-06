@@ -1,7 +1,22 @@
 '''Fichier de Test des fonctions de l'interface'''
 import unittest
+import paramiko
+import configparser
 from functions import *
-from connection import client
+
+""" SERVER CONNECTION """
+config = configparser.RawConfigParser()
+config.read("../config.txt")
+hostname = config['settings']['hostname']
+port = config['settings']['port']
+username = config['settings']['username']
+password = config['settings']['password']
+
+client = paramiko.SSHClient()
+client.load_system_host_keys()
+client.set_missing_host_key_policy(paramiko.AutoAddPolicy)
+client.connect(hostname=hostname, port=port,
+               username=username, password=password)
 
 
 class FunctionsTestCase(unittest.TestCase):
@@ -22,7 +37,7 @@ class FunctionsTestCase(unittest.TestCase):
 
     def test_analyze_logs(self):
         """Test the analyze log"""
-        with open('other_vhosts_access.log') as f:
+        with open('test_log_files/other_vhosts_access.log') as f:
             logs = f.read()
         logsAnalyses = AnalyzeLogs(logs)
         for log in logsAnalyses:
@@ -37,7 +52,7 @@ class FunctionsTestCase(unittest.TestCase):
     
     def test_analyze_error_logs(self):
         """Test the function analyze_error_logs"""
-        with open('error_test.log') as f:
+        with open('test_log_files/error_test.log') as f:
             logs = f.read()
         warn_list, emerg_list, alert_list, crit_list, error_list,info_list, notice_list, debug_list = analyze_error_logs(logs)
         self.assertEqual(len(notice_list),1)
