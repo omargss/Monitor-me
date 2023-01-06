@@ -34,3 +34,15 @@ class FunctionsTestCase(unittest.TestCase):
                 self.assertEqual(log.numberOfSearchs,4)
             if(log.name == "/?s=jfzoiejflz"):
                 self.assertEqual(log.numberOfSearchs,1)
+    
+    def test_analyze_error_logs(self):
+        """Test the function analyze_error_logs"""
+        with open('error_test.log') as f:
+            logs = f.read()
+        warn_list, emerg_list, alert_list, crit_list, error_list,info_list, notice_list, debug_list = analyze_error_logs(logs)
+        self.assertEqual(len(notice_list),1)
+        self.assertEqual(len(error_list),3)
+        self.assertEqual(len(warn_list),1)
+        self.assertEqual(len(crit_list),1)
+
+        

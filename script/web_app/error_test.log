@@ -1,0 +1,8 @@
+[Mon Jan 03 12:34:56 2023] [notice] Apache/2.4.29 (Unix) mod_wsgi/4.6.5 Python/2.7.15 configured -- resuming normal operations
+[Mon Jan 03 12:35:01 2023] [ssl:error] [client 127.0.0.1] PHP Parse error:  syntax error, unexpected '=' in /var/www/html/index.php on line 3
+[Mon Jan 03 12:36:51 2023] [http:error] [client 127.0.0.1] File does not exist: /var/www/html/favicon.ico
+[Mon Jan 03 12:37:22 2023] [warn] [client 127.0.0.1] mod_fcgid: stderr: PHP Fatal error:  Uncaught Error: Call to undefined function mysql_connect() in /var/www/html/database.php:5\nStack trace:\n#0 {main}\n  thrown in /var/www/html/database.php on line 5
+[Mon Jan 03 12:38:13 2023] [error] [client 127.0.0.1] PHP Warning:  file_get_contents(/var/www/html/data.json): failed to open stream: No such file or directory in /var/www/html/index.php on line 7
+[Mon Jan 03 12:34:56 2023] [crit] [client 127.0.0.1] PHP Fatal error:  Uncaught Exception: Database connection failed in /var/www/html/database.php:10\nStack trace:\n#0 {main}\n  thrown in /var/www/html/database.php on line 10
+[Mon Jan 03 12:36:51 2023] [alert] [client 127.0.0.1] mod_fcgid: can't apply process slot for /var/www/html/index.php
+[Mon Jan 03 12:38:13 2023] [alert] [client 127.0.0.1] mod_fcgid: can't apply process slot for /var/www/html/update.php
