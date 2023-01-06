@@ -2,9 +2,18 @@
 # pylint: disable=invalid-name
 # pylint: disable=too-few-public-methods
 # Class Process used to store processes
+import configparser
+import paramiko
+from dash import Dash, html, dcc
+import plotly.express as px
+import plotly.graph_objects as go
+import pandas as pd
+import re
+
 class Process:
     """ Process class"""
-    def __init__(self, u, p, c, m, s, co): # pylint: disable=too-many-arguments
+
+    def __init__(self, u, p, c, m, s, co):  # pylint: disable=too-many-arguments
         self.user = u
         self.cpu = c
         self.pid = p
@@ -23,14 +32,17 @@ class Process:
 # Class WebPage used to store web pages
 class WebPage:
     """ Class WebPage """
+
     def __init__(self, name, number):
         self.name = name
         self.numberOfSearchs = number
 
     name = ""
     numberOfSearchs = 0
+
     def __eq__(self, other):
         return self.name == other.name and self.numberOfSearchs == other.numberOfSearchs
+
 
 def get_memory(client):
     """ get memory function """
@@ -38,9 +50,10 @@ def get_memory(client):
     output = stdout.read().decode("utf-8")
     memorylist = output.splitlines()[0].split()
     del memorylist[0]
-    for i in range(len(memorylist)): # pylint: disable=consider-using-enumerate
+    for i in range(len(memorylist)):  # pylint: disable=consider-using-enumerate
         memorylist[i] = int(memorylist[i])
     return memorylist
+
 
 def AnalyzeLogs(file):
     """ Analyse logs function """
@@ -68,55 +81,50 @@ def get_access_logs(client):
 
 def get_error_logs(client):
     """Retourne les logs d'erreur"""
-    cmd = 'cat /var/log/apache2/error.log | grep "warn"'
+    cmd = 'cat /var/log/apache2/error.log'
     _, stdout, _ = client.exec_command(cmd)
-    output = stdout.read().decode("utf-8")
+    file = stdout.read().decode("utf-8")
+    return analyze_error_logs(file)
+
+
+def analyze_error_logs(file):
+    """Analyse les logs d'erreur"""
+    ptrnWarn = re.compile(r"\[.+:warn]|\[warn]")
+    ptrnEmerg = re.compile(r"\[.+:emerg]|\[emerg]")
+    ptrnAlert = re.compile(r"\[.+:alert]|\[alert]")
+    ptrnCrit = re.compile(r"\[.+:crit]|\[crit]")
+    ptrnNotice = re.compile(r"\[.+:notice]|\[notice]")
+    ptrnError = re.compile(r"\[.+:error]|\[error]")
+    ptrnInfo = re.compile(r"\[.+:info]|\[info]")
+    ptrnDebug = re.compile(r"\[.+:debug]|\[debug]")
+
     warn_list = []
-    for line in output.splitlines():
-        warn_list.append(line)
-    cmd = 'cat /var/log/apache2/error.log | grep "emerg"'
-    _, stdout, _ = client.exec_command(cmd)
-    output = stdout.read().decode("utf-8")
     emerg_list = []
-    for line in output.splitlines():
-        emerg_list.append(line)
-
-    cmd = 'cat /var/log/apache2/error.log | grep "alert"'
-    _, stdout, _ = client.exec_command(cmd)
-    output = stdout.read().decode("utf-8")
     alert_list = []
-    for line in output.splitlines():
-        alert_list.append(line)
-
-    cmd = 'cat /var/log/apache2/error.log | grep "crit"'
-    _, stdout, _ = client.exec_command(cmd)
-    output = stdout.read().decode("utf-8")
     crit_list = []
-    for line in output.splitlines():
-        crit_list.append(line)
-
-    cmd = 'cat /var/log/apache2/error.log | grep "error"'
-    _, stdout, _ = client.exec_command(cmd)
-    output = stdout.read().decode("utf-8")
     error_list = []
-    for line in output.splitlines():
-        error_list.append(line)
-
-    cmd = 'cat /var/log/apache2/error.log | grep "notice"'
-    _, stdout, _ = client.exec_command(cmd)
-    output = stdout.read().decode("utf-8")
+    info_list = []
     notice_list = []
-    for line in output.splitlines():
-        notice_list.append(line)
-
-    cmd = 'cat /var/log/apache2/error.log | grep "debug"'
-    _, stdout, _ = client.exec_command(cmd)
-    output = stdout.read().decode("utf-8")
     debug_list = []
-    for line in output.splitlines():
-        debug_list.append(line)
 
-    return warn_list, emerg_list,alert_list, crit_list, error_list, notice_list,debug_list
+    for line in file.splitlines():
+        if re.search(ptrnWarn, line):
+            warn_list.append(line)
+        if re.search(ptrnEmerg, line):
+            emerg_list.append(line)
+        if re.search(ptrnAlert, line):
+            alert_list.append(line)
+        if re.search(ptrnCrit, line):
+            crit_list.append(line)
+        if re.search(ptrnError, line):
+            error_list.append(line)
+        if re.search(ptrnInfo, line):
+            info_list.append(line)
+        if re.search(ptrnNotice, line):
+            notice_list.append(line)
+        if re.search(ptrnDebug, line):
+            debug_list.append(line)
+    return warn_list, emerg_list, alert_list, crit_list, error_list,info_list, notice_list, debug_list
 
 
 def get_process_infos(client):
@@ -134,7 +142,7 @@ def get_process_infos(client):
             line[2],
             line[3],
             line[8] + "-" + line[9],
-            (" ").join(line[10 : len(line)]),
+            (" ").join(line[10: len(line)]),
         )
         list_process.append(process)
     return list_process
