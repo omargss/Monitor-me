@@ -53,6 +53,10 @@ app.layout = html.Div(children=[
     dcc.Graph(
         id='Logs_graph',
     ),
+    html.H2(children='Error Logs'),
+    dcc.Graph(
+        id='Error_logs_graph',
+    ),
     dcc.Interval(
             id='interval-component_memory',
             interval=20*1000, # in milliseconds
@@ -136,7 +140,7 @@ def update_graph_live_logs(_):
     return go.Figure(data=[go.Pie(labels=memory_labels, values=memory_values,
                                  title="Pie chart representing logs access")])
 
-@app.callback(Output('Logs_graph', 'figure'),
+@app.callback(Output('Error_logs_graph', 'figure'),
               Input('interval-component_error_logs', 'n_intervals'))
 def update_graph_live_error_logs(_):
     """ ERROR LOGS CHART """
