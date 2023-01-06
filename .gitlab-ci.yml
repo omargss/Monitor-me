@@ -29,8 +29,10 @@ coverage :
     - pwd
     #if [(coverage run -m unittest -s script/ report) == (coverage run -m unittest -s script/ report --fail-under=70)]; then
     #if [(coverage report | grep -E "/^\s*TOTAL\s+\d+\s+\d+\s+\d+%/gm" | grep -E "^(.{2})*%") -gt 70]; then
-    - coverage run -m pytest /builds/printerfaceadmin/2022-23/group8/script/web_app/*
+    - coverage run -m unittest /builds/printerfaceadmin/2022-23/group8/script/web_app/*
     - coverage report -m
+    
+    #- pytest --cov=tests/ -cov-fail-under=70
     
       #echo "Coverage is ok";
     #else 
