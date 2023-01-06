@@ -59,14 +59,16 @@ def AnalyzeLogs(file):
     """ Analyse logs function """
     consultatedWebPages = []
     for line in file.splitlines():
-        trouve = 0
+        pageDemandee = line.split()[7]
+        trouve=0
         for wp in consultatedWebPages:
-            if wp.name == line.split()[7]:
+            if(wp.name == pageDemandee):
                 wp.numberOfSearchs += 1
-            trouve = 1
+                trouve = 1
         if trouve == 0:
             newWp = WebPage(line.split()[7], 1)
             consultatedWebPages.append(newWp)
+
     return consultatedWebPages
 
 
