@@ -1,5 +1,6 @@
 """ Python web app """
 # pylint: disable=pointless-string-statement
+# pyling: disable=unused-argument
 import configparser
 import time
 import paramiko
@@ -30,7 +31,7 @@ client.connect(hostname=hostname, port=port,
 
 
 """ LOGS ERROR CHART """
-#warn_list, emerg_list, alert_list, crit_list, error_list, notice_list, debug_list = functions.get_error_logs(
+# warn_list, emerg_list, alert_list, crit_list, error_list, notice_list, debug_list = functions.get_error_logs(
 #   client)
 # print(warn_list)
 """ WEB DISPLAY """
@@ -74,15 +75,16 @@ app.layout = html.Div(children=[
         ),
 
     dcc.Interval(
-            id='interval-component5',
+            id='interval-component_error_logs',
             interval=20*1000, # in milliseconds
             n_intervals=0
         )
 ])
 @app.callback(Output('Memory_pie_chart', 'figure'),
               Input('interval-component_files', 'n_intervals'))
-def update_graph_live_4():
+def update_graph_live_memory(_):
     """ MEMORY CHART """
+    time.sleep(0)
     memorylist = functions.get_memory(client)
     memorydata = {
         'Memory_Type': ['Total', 'Used', 'Free', 'Shared', 'Buff/Cache', 'Available'],
@@ -96,7 +98,7 @@ def update_graph_live_4():
 
 @app.callback(Output('File_size_graph', 'figure'),
               Input('interval-component_memory', 'n_intervals'))
-def update_graph_live_3():
+def update_graph_live_file_size(_):
     """ FILES SIZE CHART """
     time.sleep(2)
     list_files = []
@@ -108,7 +110,7 @@ def update_graph_live_3():
 
 @app.callback(Output('Pie_process_chart', 'figure'),
               Input('interval-component_process', 'n_intervals'))
-def update_graph_live_2():
+def update_graph_live_process(_):
     """ PROCESSES CHART """
     time.sleep(4)
     processlist = functions.get_process_infos(client)
@@ -122,8 +124,22 @@ def update_graph_live_2():
 
 @app.callback(Output('Logs_graph', 'figure'),
               Input('interval-component_logs', 'n_intervals'))
-def update_graph_live_1():
+def update_graph_live_logs(_):
     """ LOGS CHART """
+    time.sleep(6)
+    logs = functions.get_access_logs(client)
+    memory_labels = []
+    memory_values = []
+    for log in logs:
+        memory_labels.append(log.name)
+        memory_values.append(log.numberOfSearchs)
+    return go.Figure(data=[go.Pie(labels=memory_labels, values=memory_values,
+                                 title="Pie chart representing logs access")])
+
+@app.callback(Output('Logs_graph', 'figure'),
+              Input('interval-component_error_logs', 'n_intervals'))
+def update_graph_live_error_logs(_):
+    """ ERROR LOGS CHART """
     time.sleep(6)
     logs = functions.get_access_logs(client)
     memory_labels = []
