@@ -2,4 +2,3 @@ paramiko
 pylint
 coverage
 dash
-coverage
