@@ -28,7 +28,7 @@ coverage :
   script : 
     #if [(coverage run -m unittest -s script/ report) == (coverage run -m unittest -s script/ report --fail-under=70)]; then
     #if [(coverage report | grep -E "/^\s*TOTAL\s+\d+\s+\d+\s+\d+%/gm" | grep -E "^(.{2})*%") -gt 70]; then
-    coverage run -m pytest /builds/printerfaceadmin/2022-23/group8/main/script/
+    coverage run /builds/printerfaceadmin/2022-23/group8/main/script/
     coverage report -m
     
       #echo "Coverage is ok";
