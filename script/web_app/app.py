@@ -3,9 +3,11 @@
 import configparser
 import paramiko
 from dash import Dash, html, dcc
+from dash.dependencies import Input, Output
 import plotly.express as px
 import plotly.graph_objects as go
 import pandas as pd
+import time
 import functions
 
 app = Dash(__name__)
@@ -25,40 +27,8 @@ client.load_system_host_keys()
 client.set_missing_host_key_policy(paramiko.AutoAddPolicy)
 client.connect(hostname=hostname, port=port,
                username=username, password=password)
-""" MEMORY CHART """
-memorylist = functions.get_memory(client)
-memorydata = {
-    'Memory_Type': ['Total', 'Used', 'Free', 'Shared', 'Buff/Cache', 'Available'],
-    'Memory': memorylist
-}
-df = pd.DataFrame(memorydata)
-memoryGraph = px.bar(df, x="Memory_Type", y="Memory",
-                     color="Memory_Type", title="Usage of the memory of the remote server", barmode='stack')
-memoryGraph.update_layout(xaxis_title='Name')
-""" FILES SIZE CHART """
-list_files = []
-list_size = []
-list_files, list_size = functions.get_biggest_files(client)
-sizedata = go.Bar(x=list_size, y=list_files)
-MemoryBarChart = go.Figure(data=sizedata)
-""" PROCESSES CHART """
-processlist = functions.get_process_infos(client)
-process_labels = []
-process_values = []
-for process in processlist:
-    process_labels.append(process.command)
-    process_values.append(1)  # process.cpu
-processPieChart = go.Figure(data=[go.Pie(labels=process_labels, values=process_values,
-                                         title="Pie chart representing cpu usage by processes")])
-""" LOGS CHART """
-logs = functions.get_access_logs(client)
-memory_labels = []
-memory_values = []
-for log in logs:
-    memory_labels.append(log.name)
-    memory_values.append(log.numberOfSearchs)
-logPieChart = go.Figure(data=[go.Pie(labels=memory_labels, values=memory_values,
-                                     title="Pie chart representing logs access")])
+
+
 """ LOGS ERROR CHART """
 #warn_list, emerg_list, alert_list, crit_list, error_list, notice_list, debug_list = functions.get_error_logs(
 #   client)
@@ -68,30 +38,101 @@ app.layout = html.Div(children=[
     html.H1(children='Monitoring web application'),
     html.H2(children='Memory'),
     dcc.Graph(
-        id='Memory pie chart',
-        figure=memoryGraph
+        id='Memory_pie_chart',
     ),
-    html.H2(children='Biggest files'),
+    html.H2(children='Biggest_files'),
     dcc.Graph(
-        id='File size graph',
-        figure=MemoryBarChart
+        id='File_size_graph',
     ),
     html.H2(children='Processes'),
     dcc.Graph(
-        id='Pie process chart',
-        figure=processPieChart
+        id='Pie_process_chart',
     ),
     html.H2(children='Logs'),
     dcc.Graph(
-        id='Pie Logs chart',
-        figure=logPieChart
+        id='Logs_graph',
     ),
     dcc.Interval(
-            id='interval-component',
-            interval=5*1000, # in milliseconds
+            id='interval-component_memory',
+            interval=20*1000, # in milliseconds
+            n_intervals=0
+        ),
+    dcc.Interval(
+            id='interval-component_files',
+            interval=100*1000, # in milliseconds
+            n_intervals=0
+        ),
+    dcc.Interval(
+            id='interval-component_process',
+            interval=20*1000, # in milliseconds
+            n_intervals=0
+        ),
+    dcc.Interval(
+            id='interval-component_logs',
+            interval=20*1000, # in milliseconds
+            n_intervals=0
+        ),
+
+    dcc.Interval(
+            id='interval-component5',
+            interval=20*1000, # in milliseconds
             n_intervals=0
         )
 ])
+@app.callback(Output('Memory_pie_chart', 'figure'),
+              Input('interval-component_files', 'n_intervals'))
+def update_graph_live_4(n):
+    """ MEMORY CHART """
+    memorylist = functions.get_memory(client)
+    memorydata = {
+        'Memory_Type': ['Total', 'Used', 'Free', 'Shared', 'Buff/Cache', 'Available'],
+        'Memory': memorylist
+    }
+    dataframe = pd.DataFrame(memorydata)
+    memory_graph = px.bar(dataframe, x="Memory_Type", y="Memory",
+            color="Memory_Type", title="Usage of the memory of the remote server", barmode='stack')
+    memory_graph.update_layout(xaxis_title='Name')
+    return memory_graph
+
+@app.callback(Output('File_size_graph', 'figure'),
+              Input('interval-component_memory', 'n_intervals'))
+def update_graph_live_3(n):
+    """ FILES SIZE CHART """
+    time.sleep(2)
+    list_files = []
+    list_size = []
+    list_files, list_size = functions.get_biggest_files(client)
+    sizedata = go.Bar(x=list_size, y=list_files)
+    return go.Figure(data=sizedata)
+
+
+@app.callback(Output('Pie_process_chart', 'figure'),
+              Input('interval-component_process', 'n_intervals'))
+def update_graph_live_2(n):
+    """ PROCESSES CHART """
+    time.sleep(4)
+    processlist = functions.get_process_infos(client)
+    process_labels = []
+    process_values = []
+    for process in processlist:
+        process_labels.append(process.command)
+        process_values.append(1)  # process.cpu
+    return go.Figure(data=[go.Pie(labels=process_labels, values=process_values,
+                                 title="Pie chart representing cpu usage by processes")])
+
+@app.callback(Output('Logs_graph', 'figure'),
+              Input('interval-component_logs', 'n_intervals'))
+def update_graph_live_1(n):
+    """ LOGS CHART """
+    time.sleep(6)
+    logs = functions.get_access_logs(client)
+    memory_labels = []
+    memory_values = []
+    for log in logs:
+        memory_labels.append(log.name)
+        memory_values.append(log.numberOfSearchs)
+    return go.Figure(data=[go.Pie(labels=memory_labels, values=memory_values,
+                                 title="Pie chart representing logs access")])
 
 if __name__ == '__main__':
     app.run_server(debug=True)
