@@ -30,14 +30,20 @@ client.set_missing_host_key_policy(paramiko.AutoAddPolicy)
 client.connect(hostname=hostname, port=port,
                username=username, password=password)
 
-
-""" LOGS ERROR CHART """
-# warn_list, emerg_list, alert_list, crit_list, error_list, notice_list, debug_list = functions.get_error_logs(
-#   client)
-# print(warn_list)
 """ WEB DISPLAY """
 app.layout = html.Div(children=[
     html.H1(children='Monitoring web application'),
+    html.Div([
+    html.Label('Hostname'),
+    dcc.Input(id='hostname', value=hostname,type='text'),
+    html.Label('port'),
+    dcc.Input(id='port', value=port,type='text'),
+    html.Label('username'),
+    dcc.Input(id='username', value= username, type='text'),
+    html.Label('password'),
+    dcc.Input(id='password', value=password, type='password'),
+    html.Button('Connection', id='btnConnection'),
+]),
     html.H2(children='Memory'),
     dcc.Graph(
         id='Memory_pie_chart',
