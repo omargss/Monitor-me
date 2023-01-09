@@ -4,8 +4,8 @@ image: devops.telecomste.fr:5050/printerfaceadmin/2022-23/group8/image
 
 # include all the before script in a requirement file
 before_script:
-  - apt-get install python3-dev
-  - pip install locust
+  # - apt-get install python3-dev
+  # - pip install locust
 
   
 stages:
@@ -30,12 +30,12 @@ coverage :
     - pwd
     #if [(coverage run -m unittest -s script/ report) == (coverage run -m unittest -s script/ report --fail-under=70)]; then
     #if [(coverage report | grep -E "/^\s*TOTAL\s+\d+\s+\d+\s+\d+%/gm" | grep -E "^(.{2})*%") -gt 70]; then
-    # - coverage run -m unittest /builds/printerfaceadmin/2022-23/group8/script/web_app/*.py
-    - coverage run -m unittest /builds/printerfaceadmin/2022-23/group8/script/web_app/__init__.py
-    - coverage run -m unittest /builds/printerfaceadmin/2022-23/group8/script/web_app/functions.py
-    - coverage run -m unittest /builds/printerfaceadmin/2022-23/group8/script/web_app/locus_test.py
-    - coverage run -m unittest /builds/printerfaceadmin/2022-23/group8/script/web_app/test.py
-    - coverage report -m
+    - coverage run -m unittest /builds/printerfaceadmin/2022-23/group8/script/web_app/*.py
+    # - coverage run -m unittest /builds/printerfaceadmin/2022-23/group8/script/web_app/__init__.py
+    # - coverage run -m unittest /builds/printerfaceadmin/2022-23/group8/script/web_app/functions.py
+    # - coverage run -m unittest /builds/printerfaceadmin/2022-23/group8/script/web_app/locus_test.py
+    # - coverage run -m unittest /builds/printerfaceadmin/2022-23/group8/script/web_app/test.py
+    # - coverage report -m
     
     #- pytest --cov=tests/ -cov-fail-under=70
     
