@@ -1,6 +1,6 @@
 # Template for Compilation & Tests in GitLab CI
-# image: nickgryg/alpine-pandas
-image: devops.telecomste.fr:5050/printerfaceadmin/2022-23/group8/myimage
+image: nickgryg/alpine-pandas
+# image: devops.telecomste.fr:5050/printerfaceadmin/2022-23/group8/myimage
 
 # include all the before script in a requirement file
 before_script:
