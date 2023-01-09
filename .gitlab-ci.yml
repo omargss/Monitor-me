@@ -1,14 +1,14 @@
 # Template for Compilation & Tests in GitLab CI
-image: nickgryg/alpine-pandas
-# image: devops.telecomste.fr:5050/printerfaceadmin/2022-23/group8/myimage
+# image: nickgryg/alpine-pandas
+image: devops.telecomste.fr:5050/printerfaceadmin/2022-23/group8/image
 
 # include all the before script in a requirement file
 before_script:
-  - apk add --no-cache --virtual=build-dependencies g++ gcc make libffi-dev
-  - python --version
-  - pip install --upgrade pip
-  - pip install -r requirements.txt 
-  - cd script/web_app/
+  # - apk add --no-cache --virtual=build-dependencies g++ gcc make libffi-dev
+  # - python --version
+  # - pip install --upgrade pip
+  # - pip install -r requirements.txt 
+  # - cd script/web_app/
   
 stages:
   - compile
@@ -16,24 +16,23 @@ stages:
   - coverage
   - test
 
-# compile:
-#   stage: compile
-#   script:
-#   - echo "Here goes my compile command [NOT IMPLEMENTED YET]"
+compile:
+  stage: compile
+  script:
+  - echo "Here goes my compile command [NOT IMPLEMENTED YET]"
 
-# pylint:
-#   stage : pylint
-#   script : pylint script/web_app/app.py --fail-under=9
+pylint:
+  stage : pylint
+  script : pylint script/web_app/app.py --fail-under=9
  
-coverage :
-  stage : coverage
-  script : 
-    - pwd
-    #if [(coverage run -m unittest -s script/ report) == (coverage run -m unittest -s script/ report --fail-under=70)]; then
-    #if [(coverage report | grep -E "/^\s*TOTAL\s+\d+\s+\d+\s+\d+%/gm" | grep -E "^(.{2})*%") -gt 70]; then
-    #- coverage run -m unittest /builds/printerfaceadmin/2022-23/group8/script/web_app/*.py test.py
-    - coverage run -m unittest discover
-    - coverage report -m
+# coverage :
+#   stage : coverage
+#   script : 
+#     - pwd
+#     #if [(coverage run -m unittest -s script/ report) == (coverage run -m unittest -s script/ report --fail-under=70)]; then
+#     #if [(coverage report | grep -E "/^\s*TOTAL\s+\d+\s+\d+\s+\d+%/gm" | grep -E "^(.{2})*%") -gt 70]; then
+#     - coverage run -m unittest /builds/printerfaceadmin/2022-23/group8/script/web_app/*.py
+#     - coverage report -m
     
     #- pytest --cov=tests/ -cov-fail-under=70
     
