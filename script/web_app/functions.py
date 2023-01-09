@@ -2,12 +2,6 @@
 # pylint: disable=invalid-name
 # pylint: disable=too-few-public-methods
 # Class Process used to store processes
-import configparser
-import paramiko
-from dash import Dash, html, dcc
-import plotly.express as px
-import plotly.graph_objects as go
-import pandas as pd
 import re
 
 
@@ -63,7 +57,7 @@ def AnalyzeLogs(file):
         pageDemandee = line.split()[7]
         trouve = 0
         for wp in consultatedWebPages:
-            if (wp.name == pageDemandee):
+            if wp.name == pageDemandee:
                 wp.numberOfSearchs += 1
                 trouve = 1
         if trouve == 0:
@@ -93,15 +87,6 @@ def get_error_logs(client):
 
 def analyze_error_logs(file):
     """Analyse les logs d'erreur"""
-    ptrnWarn = re.compile(r"\[.+:warn]|\[warn]")
-    ptrnEmerg = re.compile(r"\[.+:emerg]|\[emerg]")
-    ptrnAlert = re.compile(r"\[.+:alert]|\[alert]")
-    ptrnCrit = re.compile(r"\[.+:crit]|\[crit]")
-    ptrnNotice = re.compile(r"\[.+:notice]|\[notice]")
-    ptrnError = re.compile(r"\[.+:error]|\[error]")
-    ptrnInfo = re.compile(r"\[.+:info]|\[info]")
-    ptrnDebug = re.compile(r"\[.+:debug]|\[debug]")
-
     warn_list = []
     emerg_list = []
     alert_list = []
@@ -112,23 +97,31 @@ def analyze_error_logs(file):
     debug_list = []
 
     for line in file.splitlines():
-        if re.search(ptrnWarn, line):
+        ptrn = re.compile(r"\[.+:warn]|\[warn]")
+        if re.search(ptrn, line):
             warn_list.append(line)
-        if re.search(ptrnEmerg, line):
+        ptrn = re.compile(r"\[.+:emerg]|\[emerg]")
+        if re.search(ptrn, line):
             emerg_list.append(line)
-        if re.search(ptrnAlert, line):
+        ptrn = re.compile(r"\[.+:alert]|\[alert]")
+        if re.search(ptrn, line):
             alert_list.append(line)
-        if re.search(ptrnCrit, line):
+        ptrn = re.compile(r"\[.+:crit]|\[crit]")
+        if re.search(ptrn, line):
             crit_list.append(line)
-        if re.search(ptrnError, line):
+        ptrn = re.compile(r"\[.+:error]|\[error]")
+        if re.search(ptrn, line):
             error_list.append(line)
-        if re.search(ptrnInfo, line):
+        ptrn = re.compile(r"\[.+:info]|\[info]")
+        if re.search(ptrn, line):
             info_list.append(line)
-        if re.search(ptrnNotice, line):
+        ptrn = re.compile(r"\[.+:notice]|\[notice]")
+        if re.search(ptrn, line):
             notice_list.append(line)
-        if re.search(ptrnDebug, line):
+        ptrn = re.compile(r"\[.+:debug]|\[debug]")
+        if re.search(ptrn, line):
             debug_list.append(line)
-    return warn_list, emerg_list, alert_list, crit_list, error_list, info_list, notice_list, debug_list
+    return warn_list,emerg_list,alert_list,crit_list,error_list,info_list,notice_list,debug_list
 
 
 def get_process_infos(client):
