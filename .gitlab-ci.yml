@@ -29,6 +29,7 @@ coverage :
     #if [(coverage run -m unittest -s script/ report) == (coverage run -m unittest -s script/ report --fail-under=70)]; then
     #if [(coverage report | grep -E "/^\s*TOTAL\s+\d+\s+\d+\s+\d+%/gm" | grep -E "^(.{2})*%") -gt 70]; then
     # - coverage run -m unittest /builds/printerfaceadmin/2022-23/group8/script/web_app/*.py
+    - coverage run -m unittest /builds/printerfaceadmin/2022-23/group8/script/web_app/__init__.py
     - coverage run -m unittest /builds/printerfaceadmin/2022-23/group8/script/web_app/functions.py
     - coverage run -m unittest /builds/printerfaceadmin/2022-23/group8/script/web_app/locus_test.py
     - coverage run -m unittest /builds/printerfaceadmin/2022-23/group8/script/web_app/test.py
