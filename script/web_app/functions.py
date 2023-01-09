@@ -10,6 +10,7 @@ import plotly.graph_objects as go
 import pandas as pd
 import re
 
+
 class Process:
     """ Process class"""
 
@@ -60,9 +61,9 @@ def AnalyzeLogs(file):
     consultatedWebPages = []
     for line in file.splitlines():
         pageDemandee = line.split()[7]
-        trouve=0
+        trouve = 0
         for wp in consultatedWebPages:
-            if(wp.name == pageDemandee):
+            if (wp.name == pageDemandee):
                 wp.numberOfSearchs += 1
                 trouve = 1
         if trouve == 0:
@@ -80,6 +81,7 @@ def get_access_logs(client):
     output = stdout.read().decode("utf-8")
     ConsultatedWebPages = AnalyzeLogs(output)
     return ConsultatedWebPages
+
 
 def get_error_logs(client):
     """Retourne les logs d'erreur"""
@@ -126,7 +128,7 @@ def analyze_error_logs(file):
             notice_list.append(line)
         if re.search(ptrnDebug, line):
             debug_list.append(line)
-    return warn_list, emerg_list, alert_list, crit_list, error_list,info_list, notice_list, debug_list
+    return warn_list, emerg_list, alert_list, crit_list, error_list, info_list, notice_list, debug_list
 
 
 def get_process_infos(client):
