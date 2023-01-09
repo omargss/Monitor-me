@@ -4,6 +4,7 @@
 # Class Process used to store processes
 import re
 
+
 class Process:
     """ Process class"""
 

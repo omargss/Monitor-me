@@ -4,6 +4,7 @@
 import configparser
 import time
 import paramiko
+import dash
 from dash import Dash, html, dcc
 from dash.dependencies import Input, Output
 import plotly.express as px
@@ -57,33 +58,36 @@ app.layout = html.Div(children=[
     dcc.Graph(
         id='Error_logs_graph',
     ),
+    html.Ul(id='Errors'),
     dcc.Interval(
-            id='interval-component_memory',
-            interval=20*1000, # in milliseconds
-            n_intervals=0
-        ),
+        id='interval-component_memory',
+        interval=10*1000,  # in milliseconds
+        n_intervals=0
+    ),
     dcc.Interval(
-            id='interval-component_files',
-            interval=100*1000, # in milliseconds
-            n_intervals=0
-        ),
+        id='interval-component_files',
+        interval=100*1000,  # in milliseconds
+        n_intervals=0
+    ),
     dcc.Interval(
-            id='interval-component_process',
-            interval=20*1000, # in milliseconds
-            n_intervals=0
-        ),
+        id='interval-component_process',
+        interval=10*1000,  # in milliseconds
+        n_intervals=0
+    ),
     dcc.Interval(
-            id='interval-component_logs',
-            interval=20*1000, # in milliseconds
-            n_intervals=0
-        ),
+        id='interval-component_logs',
+        interval=10*1000,  # in milliseconds
+        n_intervals=0
+    ),
 
     dcc.Interval(
-            id='interval-component_error_logs',
-            interval=20*1000, # in milliseconds
-            n_intervals=0
-        )
+        id='interval-component_error_logs',
+        interval=60*1000,  # in milliseconds
+        n_intervals=0
+    )
 ])
+
+
 @app.callback(Output('Memory_pie_chart', 'figure'),
               Input('interval-component_files', 'n_intervals'))
 def update_graph_live_memory(_):
@@ -96,9 +100,10 @@ def update_graph_live_memory(_):
     }
     dataframe = pd.DataFrame(memorydata)
     memory_graph = px.bar(dataframe, x="Memory_Type", y="Memory",
-            color="Memory_Type", title="Usage of the memory of the remote server", barmode='stack')
-    memory_graph.update_layout(xaxis_title='Name')
+                          color="Memory_Type", title="Usage of the memory of the remote server", barmode='stack')
+    memory_graph.update_layout(xaxis_title='Error type')
     return memory_graph
+
 
 @app.callback(Output('File_size_graph', 'figure'),
               Input('interval-component_memory', 'n_intervals'))
@@ -124,7 +129,8 @@ def update_graph_live_process(_):
         process_labels.append(process.command)
         process_values.append(1)  # process.cpu
     return go.Figure(data=[go.Pie(labels=process_labels, values=process_values,
-                                 title="Pie chart representing cpu usage by processes")])
+                                  title="Pie chart representing cpu usage by processes")])
+
 
 @app.callback(Output('Logs_graph', 'figure'),
               Input('interval-component_logs', 'n_intervals'))
@@ -138,21 +144,53 @@ def update_graph_live_logs(_):
         memory_labels.append(log.name)
         memory_values.append(log.numberOfSearchs)
     return go.Figure(data=[go.Pie(labels=memory_labels, values=memory_values,
-                                 title="Pie chart representing logs access")])
+                                  title="Pie chart representing logs access")])
+
 
 @app.callback(Output('Error_logs_graph', 'figure'),
               Input('interval-component_error_logs', 'n_intervals'))
 def update_graph_live_error_logs(_):
     """ ERROR LOGS CHART """
-    time.sleep(6)
-    logs = functions.get_access_logs(client)
-    memory_labels = []
-    memory_values = []
-    for log in logs:
-        memory_labels.append(log.name)
-        memory_values.append(log.numberOfSearchs)
-    return go.Figure(data=[go.Pie(labels=memory_labels, values=memory_values,
-                                 title="Pie chart representing logs access")])
+    time.sleep(8)
+    warn_list, emerg_list, alert_list, crit_list, error_list, info_list, notice_list, debug_list = functions.get_error_logs(client)
+    error_data = {
+        'Error_Type': ['Error', 'Warning', 'Critical', 'Emergency', 'alert', 'Notice','Info','Debug'],
+        'Errors': [len(error_list),len(warn_list),len(crit_list),len(emerg_list),len(alert_list),len(notice_list),len(info_list),len(debug_list)]
+    }
+    dataframe = pd.DataFrame(error_data)
+    error_graph = px.bar(dataframe, x="Error_Type", y="Errors",
+                          color="Error_Type", title="Log errors", barmode='stack')
+    error_graph.update_layout(xaxis_title='Name')
+    return error_graph
+    
+@app.callback(
+    Output("Errors", "children"),
+    Input("Error_logs_graph", "clickData"),
+)
+def fig_click(click_data):
+    """ Function that handles clicks"""
+    if not click_data:
+        raise dash.exceptions.PreventUpdate
+    warn_list, emerg_list, alert_list, crit_list, error_list, info_list, notice_list, debug_list = functions.get_error_logs(client)
 
+    click = click_data["points"][0]["x"]
+    if click == 'Error':
+        return [html.Li(i) for i in error_list]
+    elif click == 'Warning':
+        return [html.Li(i) for i in warn_list]
+    if click == 'Critical':
+        return [html.Li(i) for i in crit_list]
+    elif click == 'Emergency':
+        return [html.Li(i) for i in emerg_list]
+    if click == 'Alert':
+        return [html.Li(i) for i in alert_list]
+    elif click == 'Notice':
+        return [html.Li(i) for i in notice_list]
+    if click == 'Info':
+        return [html.Li(i) for i in info_list]
+    elif click == 'Debug':
+        return [html.Li(i) for i in debug_list]
+    else:
+        return ''
 if __name__ == '__main__':
     app.run_server(debug=True)
