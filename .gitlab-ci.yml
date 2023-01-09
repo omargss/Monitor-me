@@ -8,7 +8,7 @@ before_script:
   - python --version
   - pip install --upgrade pip
   - pip install -r requirements.txt 
-  - cd script/web_app/
+  # - cd script/web_app/
   
 stages:
   - compile
