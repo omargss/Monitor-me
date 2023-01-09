@@ -35,7 +35,7 @@ coverage :
     # - coverage run -m unittest /builds/printerfaceadmin/2022-23/group8/script/web_app/functions.py
     # - coverage run -m unittest /builds/printerfaceadmin/2022-23/group8/script/web_app/locus_test.py
     # - coverage run -m unittest /builds/printerfaceadmin/2022-23/group8/script/web_app/test.py
-    # - coverage report -m
+    - coverage report -m
     
     #- pytest --cov=tests/ -cov-fail-under=70
     
