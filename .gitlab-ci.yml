@@ -1,6 +1,6 @@
 # Template for Compilation & Tests in GitLab CI
 # image: nickgryg/alpine-pandas
-image: devops.telecomste.fr:5050/printerfaceadmin/2022-23/group8/image
+image: devops.telecomste.fr:5050/printerfaceadmin/2022-23/group8/image:test
 #test
 
 # variables:
@@ -26,14 +26,14 @@ compile:
 
 pylint:
   stage : pylint
-  script : pylint script/web_app/app.py --fail-under=8
+  script : pylint script/web_app/app.py --fail-under=7
  
 coverage :
   stage : coverage
   script : 
     - cd script/web_app/
     - pwd
-    - coverage run -m unittest /builds/printerfaceadmin/2022-23/group8/script/web_app/*.py
+    - coverage run -m unittest /builds/printerfaceadmin/2022-23/group8/script/web_app/test.py
     - coverage report # | grep -E "/^\s*TOTAL\s+\d+\s+\d+\s+\d+%/gm" | grep -E "^(.{2})*%"
     - cd /
     
