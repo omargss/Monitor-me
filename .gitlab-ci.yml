@@ -2,79 +2,62 @@
 # image: nickgryg/alpine-pandas
 image: devops.telecomste.fr:5050/printerfaceadmin/2022-23/group8/image
 
+variables:
+  - IMAGE: devops.telecomste.fr:5050/printerfaceadmin/2022-23/group8/image
+
+services:
+  - docker : dind
+
 # include all the before script in a requirement file
 before_script:
   # - apt-get install python3-dev
-  # - pip install locust
+  # - docker login -u ... -p $CI_JOB_TOKEN
 
   
 stages:
+  - build
   - compile
   - pylint
   - coverage
   - test
+  - delivery
 
-# compile:
-#   stage: compile
-#   script:
-#   - echo "Here goes my compile command [NOT IMPLEMENTED YET]"
+# build:
+#   -stage: build
+#   -script:
+#     - docker build -t $IMAGE -f docker/Dockerfile .
+#     - docker tag $IMAGE $IMAGE:test
+#     - docker push $IMAGE
 
-# pylint:
-#   stage : pylint
-#   script : pylint script/web_app/app.py --fail-under=9
+
+compile:
+  stage: compile
+  script:
+  - echo "Here goes my compile command [NOT IMPLEMENTED YET]"
+
+pylint:
+  stage : pylint
+  script : pylint script/web_app/app.py --fail-under=9
  
 coverage :
   stage : coverage
   script : 
     - cd script/web_app/
     - pwd
-    #if [(coverage run -m unittest -s script/ report) == (coverage run -m unittest -s script/ report --fail-under=70)]; then
-    #if [(coverage report | grep -E "/^\s*TOTAL\s+\d+\s+\d+\s+\d+%/gm" | grep -E "^(.{2})*%") -gt 50]; then
     - coverage run -m unittest /builds/printerfaceadmin/2022-23/group8/script/web_app/*.py
-    # - coverage run -m unittest /builds/printerfaceadmin/2022-23/group8/script/web_app/__init__.py
-    # - coverage run -m unittest /builds/printerfaceadmin/2022-23/group8/script/web_app/functions.py
-    # - coverage run -m unittest /builds/printerfaceadmin/2022-23/group8/script/web_app/locus_test.py
-    # - coverage run -m unittest /builds/printerfaceadmin/2022-23/group8/script/web_app/test.py
-    - coverage report | grep -E "/^\s*TOTAL\s+\d+\s+\d+\s+\d+%/gm" | grep -E "^(.{2})*%"
+    - coverage report # | grep -E "/^\s*TOTAL\s+\d+\s+\d+\s+\d+%/gm" | grep -E "^(.{2})*%"
     
-    #- pytest --cov=tests/ -cov-fail-under=70
-    
-      #echo "Coverage is ok";
-    #else 
-      #echo "Coverage is not ok";
-      #exit 1;
-    #fi
-
+  
   
 # test:
 #   stage: test
 #   script:
-#   - echo "Running unit tests [NOT IMPLEMENTED YET]"
-#   - python3 -m unittest test_get_infos.py
+#   - python3 -m unittest test.py
 
-# Step below are not useful for the moment
-
-#staging:
-#  stage: deploy
-#  script:
-#  - echo "Deploying application on production environnement [NOT IMPLEMENTED YET]"
-#  only:
-#  - master
-
-#production:
-#  stage: deploy
-#  script:
-#  - echo "Deploying application on pre-production environnement [NOT IMPLEMENTED YET]"
-#  only:
-#  - develop
-
-#lint:
-#  stage: lint
-#  script:
-
-#coverage:
-#  stage: coverage
-#  script:
-#  - echo "Checking for code coverage level [NOT IMPLEMENTED YET]"
-
-
+# delivery :
+#   stage : delivery
+#   script :
+#     - 
+#   only : 
+#     refs:
+#       - master
