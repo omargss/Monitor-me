@@ -1,74 +1,52 @@
 # Template for Compilation & Tests in GitLab CI
-image: nickgryg/alpine-pandas
+# image: nickgryg/alpine-pandas
+image: devops.telecomste.fr:5050/printerfaceadmin/2022-23/group8/image
+#test
+
+# variables:
+#   CI_REGISTRY_IMAGE: devops.telecomste.fr:5050/printerfaceadmin/2022-23/group8/image
 
 # include all the before script in a requirement file
 before_script:
-  - apk add --no-cache --virtual=build-dependencies g++ gcc make libffi-dev
-  - python --version
-  - pip install --upgrade pip
-  - pip install -r requirements.txt 
+  # - apt-get install python3-dev
+  # - docker login -u ... -p $CI_JOB_TOKEN
+
   
 stages:
   - compile
   - pylint
   - coverage
   - test
+  - delivery
 
-#compile:
-  #stage: compile
-  #script:
-  #- echo "Here goes my compile command [NOT IMPLEMENTED YET]"
+compile:
+  stage: compile
+  script:
+  - echo "Here goes my compile command [NOT IMPLEMENTED YET]"
 
-#pylint:
-  #stage : pylint
-  #script : pylint script/web_app/app.py --fail-under=9
+pylint:
+  stage : pylint
+  script : pylint script/web_app/app.py --fail-under=8
  
 coverage :
   stage : coverage
   script : 
+    - cd script/web_app/
     - pwd
-    #if [(coverage run -m unittest -s script/ report) == (coverage run -m unittest -s script/ report --fail-under=70)]; then
-    #if [(coverage report | grep -E "/^\s*TOTAL\s+\d+\s+\d+\s+\d+%/gm" | grep -E "^(.{2})*%") -gt 70]; then
-    - coverage run -m pytest /builds/printerfaceadmin/2022-23/group8/script/*
-    - coverage report -m
+    - coverage run -m unittest /builds/printerfaceadmin/2022-23/group8/script/web_app/*.py
+    - coverage report # | grep -E "/^\s*TOTAL\s+\d+\s+\d+\s+\d+%/gm" | grep -E "^(.{2})*%"
+    - cd /
     
-      #echo "Coverage is ok";
-    #else 
-      #echo "Coverage is not ok";
-      #exit 1;
-    #fi
+# test:
+#   stage: test
+#   script:
+#   - python3 -m unittest test.py
 
-  
-test:
-  stage: test
-  script:
-  - echo "Running unit tests [NOT IMPLEMENTED YET]"
-  - python3 -m unittest test_get_infos.py
-
-
-# Step below are not useful for the moment
-
-#staging:
-#  stage: deploy
-#  script:
-#  - echo "Deploying application on production environnement [NOT IMPLEMENTED YET]"
-#  only:
-#  - master
-
-#production:
-#  stage: deploy
-#  script:
-#  - echo "Deploying application on pre-production environnement [NOT IMPLEMENTED YET]"
-#  only:
-#  - develop
-
-#lint:
-#  stage: lint
-#  script:
-
-#coverage:
-#  stage: coverage
-#  script:
-#  - echo "Checking for code coverage level [NOT IMPLEMENTED YET]"
-
-
+# delivery :
+#   stage : delivery
+#   script :
+#     - docker build -t $CI_REGISTRY_IMAGE -f Dockerfile .
+#     - docker push $CI_REGISTRY_IMAGE 
+#   only : 
+#     refs:
+#       - master
