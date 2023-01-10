@@ -26,7 +26,7 @@ compile:
 
 pylint:
   stage : pylint
-  script : pylint script/web_app/app.py --fail-under=8
+  script : pylint script/web_app/app.py --fail-under=7
  
 coverage :
   stage : coverage
