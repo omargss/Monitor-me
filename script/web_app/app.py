@@ -27,17 +27,24 @@ password = config['settings']['password']
 client = paramiko.SSHClient()
 client.load_system_host_keys()
 client.set_missing_host_key_policy(paramiko.AutoAddPolicy)
-# client.connect(hostname=hostname, port=port,
-#                username=username, password=password)
+if __name__ == '__main__':
+    client.connect(hostname=hostname, port=port,
+               username=username, password=password)
 
-
-""" LOGS ERROR CHART """
-# warn_list, emerg_list, alert_list, crit_list, error_list, notice_list, debug_list = functions.get_error_logs(
-#   client)
-# print(warn_list)
 """ WEB DISPLAY """
 app.layout = html.Div(children=[
     html.H1(children='Monitoring web application'),
+    html.Div([
+    html.Label('Hostname'),
+    dcc.Input(id='hostname', value=hostname,type='text'),
+    html.Label('port'),
+    dcc.Input(id='port', value=port,type='text'),
+    html.Label('username'),
+    dcc.Input(id='username', value= username, type='text'),
+    html.Label('password'),
+    dcc.Input(id='password', value=password, type='password'),
+    html.Button('Connection', id='btnConnection'),
+]),
     html.H2(children='Memory'),
     dcc.Graph(
         id='Memory_pie_chart',
@@ -61,7 +68,7 @@ app.layout = html.Div(children=[
     html.Ul(id='Errors'),
     dcc.Interval(
         id='interval-component_memory',
-        interval=10*1000,  # in milliseconds
+        interval=20*1000,  # in milliseconds
         n_intervals=0
     ),
     dcc.Interval(
@@ -71,12 +78,12 @@ app.layout = html.Div(children=[
     ),
     dcc.Interval(
         id='interval-component_process',
-        interval=10*1000,  # in milliseconds
+        interval=20*1000,  # in milliseconds
         n_intervals=0
     ),
     dcc.Interval(
         id='interval-component_logs',
-        interval=10*1000,  # in milliseconds
+        interval=20*1000,  # in milliseconds
         n_intervals=0
     ),
 
@@ -109,7 +116,7 @@ def update_graph_live_memory(_):
               Input('interval-component_memory', 'n_intervals'))
 def update_graph_live_file_size(_):
     """ FILES SIZE CHART """
-    time.sleep(2)
+    time.sleep(4)
     list_files = []
     list_size = []
     list_files, list_size = functions.get_biggest_files(client)
@@ -121,7 +128,7 @@ def update_graph_live_file_size(_):
               Input('interval-component_process', 'n_intervals'))
 def update_graph_live_process(_):
     """ PROCESSES CHART """
-    time.sleep(4)
+    time.sleep(8)
     processlist = functions.get_process_infos(client)
     process_labels = []
     process_values = []
@@ -136,7 +143,7 @@ def update_graph_live_process(_):
               Input('interval-component_logs', 'n_intervals'))
 def update_graph_live_logs(_):
     """ LOGS CHART """
-    time.sleep(6)
+    time.sleep(12)
     logs = functions.get_access_logs(client)
     memory_labels = []
     memory_values = []
@@ -151,10 +158,10 @@ def update_graph_live_logs(_):
               Input('interval-component_error_logs', 'n_intervals'))
 def update_graph_live_error_logs(_):
     """ ERROR LOGS CHART """
-    time.sleep(8)
+    time.sleep(16)
     warn_list, emerg_list, alert_list, crit_list, error_list, info_list, notice_list, debug_list = functions.get_error_logs(client)
     error_data = {
-        'Error_Type': ['Error', 'Warning', 'Critical', 'Emergency', 'alert', 'Notice','Info','Debug'],
+        'Error_Type': ['Error', 'Warning', 'Critical', 'Emergency', 'Alert', 'Notice','Info','Debug'],
         'Errors': [len(error_list),len(warn_list),len(crit_list),len(emerg_list),len(alert_list),len(notice_list),len(info_list),len(debug_list)]
     }
     dataframe = pd.DataFrame(error_data)
