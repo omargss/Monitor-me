@@ -1,9 +1,9 @@
 # Template for Compilation & Tests in GitLab CI
 # image: nickgryg/alpine-pandas
-image: devops.telecomste.fr:5050/printerfaceadmin/2022-23/group8/image
+image: devops.telecomste.fr:5050/printerfaceadmin/2022-23/group8/image#:test
 
 variables:
-  - IMAGE: devops.telecomste.fr:5050/printerfaceadmin/2022-23/group8/image
+  - CI_REGISTRY_IMAGE: devops.telecomste.fr:5050/printerfaceadmin/2022-23/group8/image
 
 # include all the before script in a requirement file
 before_script:
@@ -12,20 +12,11 @@ before_script:
 
   
 stages:
-  - build
   - compile
   - pylint
   - coverage
   - test
-  - build_deliver
   - delivery
-
-# build:
-#   -stage: build
-#   -script:
-#     - docker build -t $IMAGE -f script/web_app/Dockerfile .
-#     - docker tag $IMAGE $IMAGE:test
-#     - docker push $IMAGE
 
 compile:
   stage: compile
@@ -50,17 +41,11 @@ coverage :
 #   script:
 #   - python3 -m unittest test.py
 
-build_2:
-  -stage: build_deliver
-  -script:
-#     - docker build -t $IMAGE -f Dockerfile .
-#     - docker tag $IMAGE $IMAGE:latest
-#     - docker push $IMAGE
-
 # delivery :
 #   stage : delivery
 #   script :
-#     - 
+#     - docker build -t $CI_REGISTRY_IMAGE -f Dockerfile .
+#     - docker push $CI_REGISTRY_IMAGE 
 #   only : 
 #     refs:
 #       - master
