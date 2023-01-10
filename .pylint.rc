@@ -11,3 +11,8 @@
 # it should appear only once).
 disable=R0913, #too-many-arguments
         C0301 #line-too-long
+
+
+
+[FORMAT]
+max-line-length=200
