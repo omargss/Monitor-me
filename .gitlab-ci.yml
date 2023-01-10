@@ -2,8 +2,8 @@
 # image: nickgryg/alpine-pandas
 image: devops.telecomste.fr:5050/printerfaceadmin/2022-23/group8/image
 
-# variables:
-#   - IMAGE: devops.telecomste.fr:5050/printerfaceadmin/2022-23/group8/image
+variables:
+  - IMAGE: devops.telecomste.fr:5050/printerfaceadmin/2022-23/group8/image
 
 # include all the before script in a requirement file
 before_script:
@@ -17,15 +17,15 @@ stages:
   - pylint
   - coverage
   - test
+  - build_deliver
   - delivery
 
 # build:
 #   -stage: build
 #   -script:
-#     - docker build -t $IMAGE -f docker/Dockerfile .
+#     - docker build -t $IMAGE -f script/web_app/Dockerfile .
 #     - docker tag $IMAGE $IMAGE:test
 #     - docker push $IMAGE
-
 
 compile:
   stage: compile
@@ -43,13 +43,19 @@ coverage :
     - pwd
     - coverage run -m unittest /builds/printerfaceadmin/2022-23/group8/script/web_app/*.py
     - coverage report # | grep -E "/^\s*TOTAL\s+\d+\s+\d+\s+\d+%/gm" | grep -E "^(.{2})*%"
+    - cd /
     
-  
-  
 # test:
 #   stage: test
 #   script:
 #   - python3 -m unittest test.py
+
+build_2:
+  -stage: build_deliver
+  -script:
+#     - docker build -t $IMAGE -f Dockerfile .
+#     - docker tag $IMAGE $IMAGE:latest
+#     - docker push $IMAGE
 
 # delivery :
 #   stage : delivery
