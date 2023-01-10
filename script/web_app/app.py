@@ -29,43 +29,46 @@ client.load_system_host_keys()
 client.set_missing_host_key_policy(paramiko.AutoAddPolicy)
 if __name__ == '__main__':
     client.connect(hostname=hostname, port=port,
-               username=username, password=password)
-
+                   username=username, password=password)
 """ WEB DISPLAY """
 app.layout = html.Div(children=[
+    dcc.Location(id='url', refresh=False),
     html.H1(children='Monitoring web application'),
     html.Div([
-    html.Label('Hostname'),
-    dcc.Input(id='hostname', value=hostname,type='text'),
-    html.Label('port'),
-    dcc.Input(id='port', value=port,type='text'),
-    html.Label('username'),
-    dcc.Input(id='username', value= username, type='text'),
-    html.Label('password'),
-    dcc.Input(id='password', value=password, type='password'),
-    html.Button('Connection', id='btnConnection'),
-]),
-    html.H2(children='Memory'),
-    dcc.Graph(
-        id='Memory_pie_chart',
-    ),
-    html.H2(children='Biggest_files'),
-    dcc.Graph(
-        id='File_size_graph',
-    ),
-    html.H2(children='Processes'),
-    dcc.Graph(
-        id='Pie_process_chart',
-    ),
-    html.H2(children='Logs'),
-    dcc.Graph(
-        id='Logs_graph',
-    ),
-    html.H2(children='Error Logs'),
-    dcc.Graph(
-        id='Error_logs_graph',
-    ),
-    html.Ul(id='Errors'),
+        html.Label('Hostname'),
+        dcc.Input(id='hostname', value=hostname, type='text'),
+        html.Label('port'),
+        dcc.Input(id='port', value=port, type='text'),
+        html.Label('username'),
+        dcc.Input(id='username', value=username, type='text'),
+        html.Label('password'),
+        dcc.Input(id='password', value=password, type='password'),
+        html.Button('Connection', id='btnConnection'),
+    ]),
+    dcc.Loading(id="ls-loading-1",children=[html.Div(id="ls-loading-output-1")], type="default"),
+    html.Div(id='Display', children=[
+        html.H2(children='Memory'),
+        dcc.Graph(
+            id='Memory_pie_chart',
+        ),
+        html.H2(children='Biggest_files'),
+        dcc.Graph(
+            id='File_size_graph',
+        ),
+        html.H2(children='Processes'),
+        dcc.Graph(
+            id='Pie_process_chart',
+        ),
+        html.H2(children='Logs'),
+        dcc.Graph(
+            id='Logs_graph',
+        ),
+        html.H2(children='Error Logs'),
+        dcc.Graph(
+            id='Error_logs_graph',
+        ),
+        html.Ul(id='Errors'),
+    ]),
     dcc.Interval(
         id='interval-component_memory',
         interval=20*1000,  # in milliseconds
@@ -91,8 +94,20 @@ app.layout = html.Div(children=[
         id='interval-component_error_logs',
         interval=60*1000,  # in milliseconds
         n_intervals=0
-    )
+    ),
+    dcc.Interval(
+        id='interval-loading',
+        interval=100,  # in milliseconds
+        n_intervals=0
+    ),
 ])
+""" CALLBACKS """
+
+@app.callback(Output("ls-loading-output-1",'children'), [Input('url', 'pathname')])
+def loading(number):
+    """ LOADING STATE"""
+    time.sleep(20)
+    return number
 
 
 @app.callback(Output('Memory_pie_chart', 'figure'),
@@ -159,17 +174,19 @@ def update_graph_live_logs(_):
 def update_graph_live_error_logs(_):
     """ ERROR LOGS CHART """
     time.sleep(16)
-    warn_list, emerg_list, alert_list, crit_list, error_list, info_list, notice_list, debug_list = functions.get_error_logs(client)
+    warn_list, emerg_list, alert_list, crit_list, error_list, info_list, notice_list, debug_list = functions.get_error_logs(
+        client)
     error_data = {
-        'Error_Type': ['Error', 'Warning', 'Critical', 'Emergency', 'Alert', 'Notice','Info','Debug'],
-        'Errors': [len(error_list),len(warn_list),len(crit_list),len(emerg_list),len(alert_list),len(notice_list),len(info_list),len(debug_list)]
+        'Error_Type': ['Error', 'Warning', 'Critical', 'Emergency', 'Alert', 'Notice', 'Info', 'Debug'],
+        'Errors': [len(error_list), len(warn_list), len(crit_list), len(emerg_list), len(alert_list), len(notice_list), len(info_list), len(debug_list)]
     }
     dataframe = pd.DataFrame(error_data)
     error_graph = px.bar(dataframe, x="Error_Type", y="Errors",
-                          color="Error_Type", title="Log errors", barmode='stack')
+                         color="Error_Type", title="Log errors", barmode='stack')
     error_graph.update_layout(xaxis_title='Name')
     return error_graph
-    
+
+
 @app.callback(
     Output("Errors", "children"),
     Input("Error_logs_graph", "clickData"),
@@ -178,26 +195,28 @@ def fig_click(click_data):
     """ Function that handles clicks"""
     if not click_data:
         raise dash.exceptions.PreventUpdate
-    warn_list, emerg_list, alert_list, crit_list, error_list, info_list, notice_list, debug_list = functions.get_error_logs(client)
-
+    warn_list, emerg_list, alert_list, crit_list, error_list, info_list, notice_list, debug_list = functions.get_error_logs(
+        client)
+    temp = ''
     click = click_data["points"][0]["x"]
     if click == 'Error':
-        return [html.Li(i) for i in error_list]
+        temp = [html.Li(i) for i in error_list]
     elif click == 'Warning':
-        return [html.Li(i) for i in warn_list]
-    if click == 'Critical':
-        return [html.Li(i) for i in crit_list]
+        temp = [html.Li(i) for i in warn_list]
+    elif click == 'Critical':
+        temp = [html.Li(i) for i in crit_list]
     elif click == 'Emergency':
-        return [html.Li(i) for i in emerg_list]
-    if click == 'Alert':
-        return [html.Li(i) for i in alert_list]
+        temp = [html.Li(i) for i in emerg_list]
+    elif click == 'Alert':
+        temp = [html.Li(i) for i in alert_list]
     elif click == 'Notice':
-        return [html.Li(i) for i in notice_list]
-    if click == 'Info':
-        return [html.Li(i) for i in info_list]
+        temp = [html.Li(i) for i in notice_list]
+    elif click == 'Info':
+        temp = [html.Li(i) for i in info_list]
     elif click == 'Debug':
-        return [html.Li(i) for i in debug_list]
-    else:
-        return ''
+        temp = [html.Li(i) for i in debug_list]
+    return temp
+
+
 if __name__ == '__main__':
     app.run_server(debug=True)
