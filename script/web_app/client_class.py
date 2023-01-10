@@ -20,13 +20,6 @@ class Client:
         """Execute the command pass in parameter"""
         return self.client_ssh.exec_command(string)
 
-    def change_client(self,host,port,user,pwd):
-        """Change the client attributes (doesn't reload the connection"""
-        self.hostname=host
-        self.port=port
-        self.username=user
-        self.password=pwd
-
     hostname=""
     port=""
     username=""
