@@ -5,9 +5,6 @@ image: devops.telecomste.fr:5050/printerfaceadmin/2022-23/group8/image
 # variables:
 #   - IMAGE: devops.telecomste.fr:5050/printerfaceadmin/2022-23/group8/image
 
-services:
-  - docker: dind
-
 # include all the before script in a requirement file
 before_script:
   # - apt-get install python3-dev
