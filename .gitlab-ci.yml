@@ -2,8 +2,8 @@
 # image: nickgryg/alpine-pandas
 image: devops.telecomste.fr:5050/printerfaceadmin/2022-23/group8/image#:test
 
-variables:
-  - CI_REGISTRY_IMAGE: devops.telecomste.fr:5050/printerfaceadmin/2022-23/group8/image
+# variables:
+#   CI_REGISTRY_IMAGE: devops.telecomste.fr:5050/printerfaceadmin/2022-23/group8/image
 
 # include all the before script in a requirement file
 before_script:
