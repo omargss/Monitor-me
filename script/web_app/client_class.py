@@ -11,12 +11,14 @@ class Client:
 
     def connection(self):
         """Allows to connect to the client"""
-        client_ssh = paramiko.SSHClient()
-        client_ssh.load_system_host_keys()
-        client_ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy)
-        client_ssh.connect(hostname=self.hostname,
+        self.client_ssh.load_system_host_keys()
+        self.client_ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy)
+        self.client_ssh.connect(hostname=self.hostname,
             port=self.port,username=self.username, password=self.password)
-        return client_ssh
+
+    def exec_command(self,string):
+        """Execute the command pass in parameter"""
+        return self.client_ssh.exec_command(string)
 
     def change_client(self,host,port,user,pwd):
         """Change the client attributes (doesn't reload the connection"""
@@ -29,3 +31,4 @@ class Client:
     port=""
     username=""
     password=""
+    client_ssh=paramiko.SSHClient()

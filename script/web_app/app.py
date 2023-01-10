@@ -26,7 +26,7 @@ password = config['settings']['password']
 
 client = client_class.Client(hostname,port,username,password)
 
-client = client.connection()
+client.connection()
 
 # client = paramiko.SSHClient()
 # client.load_system_host_keys()
@@ -205,4 +205,3 @@ def fig_click(click_data):
         return ''
 if __name__ == '__main__':
     app.run_server(debug=True)
-    
