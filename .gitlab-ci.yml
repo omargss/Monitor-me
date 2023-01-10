@@ -3,14 +3,8 @@
 image: devops.telecomste.fr:5050/printerfaceadmin/2022-23/group8/image
 #test
 
-# variables:
-#   CI_REGISTRY_IMAGE: devops.telecomste.fr:5050/printerfaceadmin/2022-23/group8/image
-
 # include all the before script in a requirement file
 before_script:
-  # - apt-get install python3-dev
-  # - docker login -u ... -p $CI_JOB_TOKEN
-
   
 stages:
   - compile
@@ -44,9 +38,24 @@ coverage :
 
 # delivery :
 #   stage : delivery
+#   image: docker:19.03.12
+#   variables:
+#     CI_REGISTRY_IMAGE: devops.telecomste.fr:5050/<project-url>
+#     DOCKER_HOST: tcp://docker:2375/
+#     DOCKER_DRIVER: overlay2
+#     DOCKER_TLS_CERTDIR: ""
+
+#   services:
+#     - name: docker:dind
+#       entrypoint: ["env", "-u", "DOCKER_HOST"]
+#       command: ["dockerd-entrypoint.sh"]
+  
+#   before_script:
+#     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
 #   script :
 #     - docker build -t $CI_REGISTRY_IMAGE -f Dockerfile .
 #     - docker push $CI_REGISTRY_IMAGE 
+
 #   only : 
 #     refs:
 #       - master
