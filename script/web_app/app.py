@@ -3,7 +3,6 @@
 # pyling: disable=unused-argument
 import configparser
 import time
-import paramiko
 import dash
 from dash import Dash, html, dcc
 from dash.dependencies import Input, Output
@@ -11,6 +10,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 import pandas as pd
 import functions
+import client_class
 
 app = Dash(__name__)
 
@@ -24,12 +24,16 @@ port = config['settings']['port']
 username = config['settings']['username']
 password = config['settings']['password']
 
-client = paramiko.SSHClient()
-client.load_system_host_keys()
-client.set_missing_host_key_policy(paramiko.AutoAddPolicy)
-if __name__ == '__main__':
-    client.connect(hostname=hostname, port=port,
-               username=username, password=password)
+client = client_class.Client(hostname,port,username,password)
+
+client = client.connection()
+
+# client = paramiko.SSHClient()
+# client.load_system_host_keys()
+# client.set_missing_host_key_policy(paramiko.AutoAddPolicy)
+# if __name__ == '__main__':
+#    client.connect(hostname=hostname, port=port,
+#               username=username, password=password)
 
 """ WEB DISPLAY """
 app.layout = html.Div(children=[
