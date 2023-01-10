@@ -205,3 +205,5 @@ def fig_click(click_data):
         return ''
 if __name__ == '__main__':
     app.run_server(debug=True)
+    client.connect(hostname=hostname, port=port,
+               username=username, password=password)
