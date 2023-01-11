@@ -1,11 +1,12 @@
 """ Python web app """
 # pylint: disable=pointless-string-statement
 # pyling: disable=unused-argument
-import configparser
+
 import time
+import json
 import dash
 from dash import Dash, html, dcc
-from dash.dependencies import Input, Output
+from dash.dependencies import Input, Output, State
 import plotly.express as px
 import plotly.graph_objects as go
 import pandas as pd
@@ -17,23 +18,26 @@ app = Dash(__name__)
 # assume you have a "long-form" data frame
 # see https://plotly.com/python/px-arguments/ for more options
 """ SERVER CONNECTION """
-config = configparser.RawConfigParser()
+"""config = configparser.RawConfigParser()
 config.read("../config.txt")
 hostname = config['settings']['hostname']
 port = config['settings']['port']
 username = config['settings']['username']
-password = config['settings']['password']
+password = config['settings']['password']"""
+
+with open('config.json',"r",encoding="utf-8") as f:
+    data = json.load(f)
+
+machines=data['machines']
+hostname=machines[0]['hostname']
+port = machines[0]['port']
+username = machines[0]['username']
+password=machines[0]['password']
+
 
 client = client_class.Client(hostname,port,username,password)
 
 client.connection()
-
-# client = paramiko.SSHClient()
-# client.load_system_host_keys()
-# client.set_missing_host_key_policy(paramiko.AutoAddPolicy)
-# if __name__ == '__main__':
-#    client.connect(hostname=hostname, port=port,
-#               username=username, password=password)
 
 """ WEB DISPLAY """
 COLOR1 ='#272643'
@@ -51,34 +55,36 @@ app.layout = html.Div(children=[
         dcc.Input(id='username', value=username, type='text'),
         html.Label('Password: '),
         dcc.Input(id='password', value=password, type='password'),
-        html.Button('Connection', id='btnConnection'),
+        html.Button('Save', id='saveBtn'),
     ]),
+    html.Div(id="p"),
     html.Br(),
     html.Br(),
     dcc.Loading(id="ls-loading-1",children=[html.Div(id="ls-loading-output-1")], type="default"),
     html.Div(id='Display', children=[
-        html.H2(children='Memory'),
-        dcc.Graph(
-            id='Memory_pie_chart',
-        ),
-        html.H2(children='Biggest_files'),
-        dcc.Graph(
-            id='File_size_graph',
-        ),
-        html.H2(children='Processes'),
-        dcc.Graph(
-            id='Pie_process_chart',
-        ),
-        html.H2(children='Logs'),
-        dcc.Graph(
-            id='Logs_graph',
-        ),
-        html.H2(children='Error Logs'),
-        dcc.Graph(
-            id='Error_logs_graph',
-        ),
-        html.Ul(id='Errors'),
+    html.H2(children='Memory'),
+    dcc.Graph(
+        id='Memory_pie_chart',
+    ),
+    html.H2(children='Biggest_files'),
+    dcc.Graph(
+        id='File_size_graph',
+    ),
+    html.H2(children='Processes'),
+    dcc.Graph(
+        id='Pie_process_chart',
+    ),
+    html.H2(children='Logs'),
+    dcc.Graph(
+        id='Logs_graph',
+    ),
+    html.H2(children='Error Logs'),
+    dcc.Graph(
+        id='Error_logs_graph',
+    ),
+    html.Ul(id='Errors')
     ]),
+
     dcc.Interval(
         id='interval-component',
         interval=20*1000,  # in milliseconds
@@ -93,6 +99,32 @@ def loading(_):
     time.sleep(2)
     return ''
 
+@app.callback(
+    [Output('p','children')],
+    [Input('saveBtn','n_clicks')],
+    [
+        State('hostname','value'),
+        State('port','value'),
+        State('username','value'),
+        State('password','value')
+    ]
+)
+def update_config_json(n_click, input_hostname,input_port,input_username,input_password):
+    """ UPDATE JSON """
+    if n_click:
+        with open("config.json", "r",encoding="utf-8") as file:
+            config_json = json.load(file)
+            config_json["machines"].append({
+                "hostname": input_hostname,
+                "port": input_port,
+                "username": input_username,
+                "password": input_password
+        })
+
+        with open("config.json", "w",encoding="utf-8") as file:
+            json.dump(config_json, file, indent=4)
+        time.sleep(0.5)
+    return dash.no_update
 
 @app.callback(Output('Memory_pie_chart', 'figure'),
                     Output('File_size_graph', 'figure'),
