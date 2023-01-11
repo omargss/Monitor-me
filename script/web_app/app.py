@@ -1,8 +1,9 @@
 """ Python web app """
 # pylint: disable=pointless-string-statement
 # pyling: disable=unused-argument
-import configparser
+
 import time
+import json
 import dash
 from dash import Dash, html, dcc
 from dash.dependencies import Input, Output, State
@@ -11,7 +12,6 @@ import plotly.graph_objects as go
 import pandas as pd
 import functions
 import client_class
-import json
 
 app = Dash(__name__)
 
@@ -55,8 +55,9 @@ app.layout = html.Div(children=[
         dcc.Input(id='username', value=username, type='text'),
         html.Label('Password: '),
         dcc.Input(id='password', value=password, type='password'),
-        html.Button('Connection', id='btnConnection'),
+        html.Button('Save', id='saveBtn'),
     ]),
+    html.Div(id="p"),
     html.Br(),
     html.Br(),
     dcc.Loading(id="ls-loading-1",children=[html.Div(id="ls-loading-output-1")], type="default"),
@@ -124,7 +125,7 @@ def loading(_):
     return ''
 
 @app.callback(
-    [Output('hidden-div','children')],
+    [Output('p','children')],
     [Input('saveBtn','n_clicks')],
     [
         State('hostname','value'),
@@ -133,20 +134,21 @@ def loading(_):
         State('password','value')
     ]
 )
-def update_config_JSON(_):
+def update_config_json(_, input_hostname,input_port,input_username,input_password):
+    """ UPDATE JSON """
     with open("config.json", "r",encoding="utf-8") as file:
-        configJSON = json.load(file)
-        configJSON["machines"].append({
-            "hostname": "test@tse",
-            "port": 22000,
-            "username": "cyril",
-            "password": "mdp"
+        config_json = json.load(file)
+        config_json["machines"].append({
+            "hostname": input_hostname,
+            "port": input_port,
+            "username": input_username,
+            "password": input_password
     })
 
-    # Enregistrer les données modifiées dans le fichier JSON
-
-    with open("config.json", "w") as f:
-        json.dump(data, f, indent=4)
+    with open("config.json", "w",encoding="utf-8") as file:
+        json.dump(config_json, file, indent=4)
+    time.sleep(0.5)
+    return dash.no_update
 
 @app.callback(Output('Memory_pie_chart', 'figure'),
               Input('interval-component_files', 'n_intervals'))
