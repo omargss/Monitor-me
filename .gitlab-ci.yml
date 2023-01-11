@@ -35,7 +35,7 @@ coverage :
 test:
   stage: test
   script:
-  - python3 -m unittest /builds/printerfaceadmin/2022-23/group8/script/web_app/test.py
+  - python3 unittest /builds/printerfaceadmin/2022-23/group8/script/web_app/test.py
 
 # delivery :
 #   stage : delivery
