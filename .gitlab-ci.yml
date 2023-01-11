@@ -35,8 +35,9 @@ coverage :
 test:
   stage: test
   script:
-  - python3 -m unittest
-  
+  - cd script/web_app/
+  - python3 -m unittest test.py
+ 
 # delivery :
 #   stage : delivery
 #   image: docker:19.03.12
