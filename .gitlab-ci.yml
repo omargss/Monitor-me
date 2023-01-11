@@ -34,8 +34,8 @@ coverage :
 test:
   stage: test
   script:
-  - cd script/web_app/
-  - python3 -m unittest test.py
+  # - cd script/web_app/
+  - python3 -m unittest script/web_app/test.py
  
 # delivery :
 #   stage : delivery
