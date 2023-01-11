@@ -17,6 +17,7 @@ compile:
   stage: compile
   script:
   - echo "Here goes my compile command [NOT IMPLEMENTED YET]"
+# - python -m compileall .
 
 pylint:
   stage : pylint
