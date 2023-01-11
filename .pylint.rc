@@ -10,6 +10,6 @@
 # multiple time (only on the command line, not in the configuration file where
 # it should appear only once).
 disable=C0301, #line-too-long
-        R1705 #no-else-return
+        #R1705 #no-else-return
 [FORMAT]
 max-line-length=200
