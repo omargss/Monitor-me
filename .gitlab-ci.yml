@@ -32,10 +32,10 @@ coverage :
     - coverage report --fail-under=50
     - cd /
     
-# test:
-#   stage: test
-#   script:
-#   - python3 -m unittest test.py
+test:
+  stage: test
+  script:
+  - python3 -m unittest test.py
 
 # delivery :
 #   stage : delivery
