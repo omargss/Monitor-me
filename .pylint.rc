@@ -9,5 +9,9 @@
 # can either give multiple identifier separated by comma (,) or put this option
 # multiple time (only on the command line, not in the configuration file where
 # it should appear only once).
-disable=R0913, #too-many-arguments
-        C0301 #line-too-long
+disable=C0301, #line-too-long
+        R1705, #no-else-return
+        R0911 #too-many-return-statements
+        
+[FORMAT]
+max-line-length=200
