@@ -4,7 +4,7 @@ image: devops.telecomste.fr:5050/printerfaceadmin/2022-23/group8/image:test
 #test
 
 # include all the before script in a requirement file
-before_script:
+# before_script:
   
 stages:
   - compile
@@ -16,7 +16,6 @@ stages:
 compile:
   stage: compile
   script:
-  - echo "Here goes my compile command [NOT IMPLEMENTED YET]"
   - python -m compileall .
 
 pylint:
