@@ -3,14 +3,8 @@
 image: devops.telecomste.fr:5050/printerfaceadmin/2022-23/group8/image:test
 #test
 
-# variables:
-#   CI_REGISTRY_IMAGE: devops.telecomste.fr:5050/printerfaceadmin/2022-23/group8/image
-
 # include all the before script in a requirement file
-before_script:
-  # - apt-get install python3-dev
-  # - docker login -u ... -p $CI_JOB_TOKEN
-
+# before_script:
   
 stages:
   - compile
@@ -22,11 +16,11 @@ stages:
 compile:
   stage: compile
   script:
-  - echo "Here goes my compile command [NOT IMPLEMENTED YET]"
+  - python -m compileall .
 
 pylint:
   stage : pylint
-  script : pylint script/web_app/app.py --fail-under=7
+  script : pylint -d C0301,R0911,R1705 script/web_app/*.py --fail-under=7
  
 coverage :
   stage : coverage
@@ -34,19 +28,36 @@ coverage :
     - cd script/web_app/
     - pwd
     - coverage run -m unittest /builds/printerfaceadmin/2022-23/group8/script/web_app/test.py
-    - coverage report # | grep -E "/^\s*TOTAL\s+\d+\s+\d+\s+\d+%/gm" | grep -E "^(.{2})*%"
+    - coverage report --fail-under=50
     - cd /
     
-# test:
-#   stage: test
-#   script:
-#   - python3 -m unittest test.py
-
+test:
+  stage: test
+  script:
+  - cd script/web_app/
+  - python3 -m unittest test.py
+  - cd /
+ 
 # delivery :
 #   stage : delivery
+#   image: docker:19.03.12
+#   variables:
+#     CI_REGISTRY_IMAGE: devops.telecomste.fr:5050/printerfaceadmin/2022-23/group8/image
+#     DOCKER_HOST: tcp://docker:2375/
+#     DOCKER_DRIVER: overlay2
+#     DOCKER_TLS_CERTDIR: ""
+
+#   services:
+#     - name: docker:dind
+#       entrypoint: ["env", "-u", "DOCKER_HOST"]
+#       command: ["dockerd-entrypoint.sh"]
+  
+#   before_script:
+#     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
 #   script :
-#     - docker build -t $CI_REGISTRY_IMAGE -f Dockerfile .
-#     - docker push $CI_REGISTRY_IMAGE 
+#     - docker build -t "$CI_REGISTRY_IMAGE" -f Dockerfile .
+#     - docker push "$CI_REGISTRY_IMAGE" 
+
 #   only : 
 #     refs:
 #       - master
