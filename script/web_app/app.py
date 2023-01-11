@@ -5,35 +5,39 @@ import configparser
 import time
 import dash
 from dash import Dash, html, dcc
-from dash.dependencies import Input, Output
+from dash.dependencies import Input, Output, State
 import plotly.express as px
 import plotly.graph_objects as go
 import pandas as pd
 import functions
 import client_class
+import json
 
 app = Dash(__name__)
 
 # assume you have a "long-form" data frame
 # see https://plotly.com/python/px-arguments/ for more options
 """ SERVER CONNECTION """
-config = configparser.RawConfigParser()
+"""config = configparser.RawConfigParser()
 config.read("../config.txt")
 hostname = config['settings']['hostname']
 port = config['settings']['port']
 username = config['settings']['username']
-password = config['settings']['password']
+password = config['settings']['password']"""
+
+with open('config.json',"r",encoding="utf-8") as f:
+    data = json.load(f)
+
+machines=data['machines']
+hostname=machines[0]['hostname']
+port = machines[0]['port']
+username = machines[0]['username']
+password=machines[0]['password']
+
 
 client = client_class.Client(hostname,port,username,password)
 
 client.connection()
-
-# client = paramiko.SSHClient()
-# client.load_system_host_keys()
-# client.set_missing_host_key_policy(paramiko.AutoAddPolicy)
-# if __name__ == '__main__':
-#    client.connect(hostname=hostname, port=port,
-#               username=username, password=password)
 
 """ WEB DISPLAY """
 app.layout = html.Div(children=[
@@ -47,7 +51,7 @@ app.layout = html.Div(children=[
     dcc.Input(id='username', value= username, type='text'),
     html.Label('password'),
     dcc.Input(id='password', value=password, type='password'),
-    html.Button('Connection', id='btnConnection'),
+    html.Button('Save', id='saveBtn'),
 ]),
     html.H2(children='Memory'),
     dcc.Graph(
@@ -98,6 +102,30 @@ app.layout = html.Div(children=[
     )
 ])
 
+@app.callback(
+    [Output('hidden-div','children')],
+    [Input('saveBtn','n_clicks')],
+    [
+        State('hostname','value'),
+        State('port','value'),
+        State('username','value'),
+        State('password','value')
+    ]
+)
+def update_config_JSON(_):
+    with open("config.json", "r",encoding="utf-8") as file:
+        configJSON = json.load(file)
+        configJSON["machines"].append({
+            "hostname": "test@tse",
+            "port": 22000,
+            "username": "cyril",
+            "password": "mdp"
+    })
+
+    # Enregistrer les données modifiées dans le fichier JSON
+
+    with open("config.json", "w") as f:
+        json.dump(data, f, indent=4)
 
 @app.callback(Output('Memory_pie_chart', 'figure'),
               Input('interval-component_files', 'n_intervals'))
