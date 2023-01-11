@@ -134,20 +134,21 @@ def loading(_):
         State('password','value')
     ]
 )
-def update_config_json(_, input_hostname,input_port,input_username,input_password):
+def update_config_json(n_click, input_hostname,input_port,input_username,input_password):
     """ UPDATE JSON """
-    with open("config.json", "r",encoding="utf-8") as file:
-        config_json = json.load(file)
-        config_json["machines"].append({
-            "hostname": input_hostname,
-            "port": input_port,
-            "username": input_username,
-            "password": input_password
-    })
+    if n_click:
+        with open("config.json", "r",encoding="utf-8") as file:
+            config_json = json.load(file)
+            config_json["machines"].append({
+                "hostname": input_hostname,
+                "port": input_port,
+                "username": input_username,
+                "password": input_password
+        })
 
-    with open("config.json", "w",encoding="utf-8") as file:
-        json.dump(config_json, file, indent=4)
-    time.sleep(0.5)
+        with open("config.json", "w",encoding="utf-8") as file:
+            json.dump(config_json, file, indent=4)
+        time.sleep(0.5)
     return dash.no_update
 
 @app.callback(Output('Memory_pie_chart', 'figure'),
