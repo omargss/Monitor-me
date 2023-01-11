@@ -1,0 +1,42 @@
+/* Fonts */
+
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:300&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Reenie+Beanie&display=swap');
+
+/* Basic */
+
+body {
+    color: #ffffff;
+	background-color: #2c698d;
+    margin:1%;
+}
+
+button{
+    background-color:#e3f6f5;
+    margin-left: 1%;
+}
+input{
+    background-color: #e3f6f5;
+    margin-right: 2%;
+}
+
+html {
+	font-family: 'Open Sans', sans-serif;
+}
+
+h1,h2,h3,p,label {
+    color: #e3f6f5;
+}
+h1{
+    font-size: 4rem;
+    text-align:center;
+}
+h2 {
+	line-height: 110%;
+	font-size: 2.2rem;
+	font-weight: 700;
+}
+
+graph{
+    background-color: #ebeae9;
+}
