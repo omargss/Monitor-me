@@ -29,10 +29,12 @@ coverage :
     - pwd
     - coverage run -m unittest /builds/printerfaceadmin/2022-23/group8/script/web_app/test.py
     - coverage report --fail-under=50
+    - cd /
     
 test:
   stage: test
   script:
+  - cd script/web_app/
   - python3 -m unittest test.py
   - cd /
  
