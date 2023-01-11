@@ -35,8 +35,8 @@ coverage :
 test:
   stage: test
   script:
-  - python3 /builds/printerfaceadmin/2022-23/group8/script/web_app/test.py
-
+  - python3 -m unittest
+  
 # delivery :
 #   stage : delivery
 #   image: docker:19.03.12
