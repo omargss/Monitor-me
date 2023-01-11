@@ -29,8 +29,7 @@ coverage :
     - cd script/web_app/
     - pwd
     - coverage run -m unittest /builds/printerfaceadmin/2022-23/group8/script/web_app/test.py
-    # - coverage report | awk '$1 == "TOTAL" {print $NF+0}' #| grep -E "/^\s*TOTAL\s+\d+\s+\d+\s+\d+%/gm" | grep -E "^(.{2})*%"
-    - if [ (coverage report | awk '$1 == "TOTAL" {print $NF+0}') -gt 50]; then echo "cover is fine"; else echo "cover isn't fine"; fi
+    - coverage report
     - cd /
     
 # test:
