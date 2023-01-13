@@ -7,7 +7,7 @@ RUN pip install dash
 RUN pip install paramiko
 
 COPY script /app/script
-WORKDIR /script/web_app
+WORKDIR /app/script/web_app
 
 EXPOSE 8080
 
