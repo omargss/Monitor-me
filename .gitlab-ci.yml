@@ -2,9 +2,6 @@
 # image: nickgryg/alpine-pandas
 image: devops.telecomste.fr:5050/printerfaceadmin/2022-23/group8/image:test
 #test
-
-# include all the before script in a requirement file
-# before_script:
   
 stages:
   - compile
@@ -38,26 +35,30 @@ test:
   - python3 -m unittest test.py
   - cd /
  
-# delivery :
-#   stage : delivery
-#   image: docker:19.03.12
-#   variables:
-#     CI_REGISTRY_IMAGE: devops.telecomste.fr:5050/printerfaceadmin/2022-23/group8/image
-#     DOCKER_HOST: tcp://docker:2375/
-#     DOCKER_DRIVER: overlay2
-#     DOCKER_TLS_CERTDIR: ""
+delivery :
+  stage : delivery
+  image: docker:19.03.12
+  variables:
+    CI_REGISTRY_IMAGE: devops.telecomste.fr:5050/printerfaceadmin/2022-23/group8/image
+    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
 
-#   services:
-#     - name: docker:dind
-#       entrypoint: ["env", "-u", "DOCKER_HOST"]
-#       command: ["dockerd-entrypoint.sh"]
-  
-#   before_script:
-#     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
-#   script :
-#     - docker build -t "$CI_REGISTRY_IMAGE" -f Dockerfile .
-#     - docker push "$CI_REGISTRY_IMAGE" 
+  services:
+    - name: docker:dind
+      entrypoint: ["env", "-u", "DOCKER_HOST"]
+      command: ["dockerd-entrypoint.sh"]
 
-#   only : 
-#     refs:
-#       - master
+  before_script:
+    - echo "$CI_REGISTRY_USER"
+    - echo "$CI_REGISTRY_PASSWORD"
+    - echo "$CI_REGISTRY"
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+
+  script :
+    - docker build -t "$CI_REGISTRY_IMAGE" -f Dockerfile .
+    - docker push "$CI_REGISTRY_IMAGE" 
+
+  only : 
+    refs:
+      - main
