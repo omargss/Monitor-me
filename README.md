@@ -30,7 +30,7 @@ docker pull devops.telecomste.fr:5050/printerfaceadmin/2022-23/group8/image:late
 ```bash
 docker run -p 8050:8050 devops.telecomste.fr:5050/printerfaceadmin/2022-23/group8/image:latest
 ```
-Once you run these commands, go on this link : http://localhost:8050/ ; this shall show you the dashboards of our remote machines.
+Once you run these commands, go on this link : http://localhost:8050/ ; this shall show you the dashboards of our remote machines (if this doesn't work, try another navigator such as Brave).
 
 ## Built With
 * Python
