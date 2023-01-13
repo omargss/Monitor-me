@@ -36,9 +36,12 @@ h2 {
 	font-size: 2.2rem;
 	font-weight: 700;
 }
-li:hover {
+#new_machines{
     color: cyan;
+    cursor: pointer;
+ 
 }
+
 
 graph{
     background-color: #ebeae9;

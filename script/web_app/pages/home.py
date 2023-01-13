@@ -13,14 +13,15 @@ with open('config.json',"r",encoding="utf-8") as f:
 machines=data['machines']
 
 list_machine = []
+i=0
 for machine in machines:
     try:
         client = client_class.Client(machine["hostname"],machine["port"],machine["username"],machine["password"])
+        list_machine.append(html.Li(children=[dcc.Link(machine["hostname"]+":    Online", href="machine/"+str(i)),html.Button("Delete",id="deleteBtn")]))
         client.connection()
-        list_machine.append(html.Li(machine["hostname"]+":    Online"))
     except Exception as e:
-        list_machine.append(html.Li(machine["hostname"]+":    Offline"))
-
+        list_machine.append(html.Li(children=[dcc.Link(machine["hostname"]+":    Offline", href="machine/"+str(i)),html.Button("Delete",id="deleteBtn")]))
+    i= i+1
 
 output = []
 
@@ -77,5 +78,6 @@ def update(n_click, input_hostname,input_port,input_username,input_password):
                 list_li.append(html.Li(machine_callback["hostname"]+"    Online"))
             except Exception as _:
                 list_li.append(html.Li(machine_callback["hostname"]+"    Offline"))
-        print(list_li)
         return [list_li]
+    else:
+        return dash.no_update

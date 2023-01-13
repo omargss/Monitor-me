@@ -11,12 +11,6 @@
             "port": 22118,
             "username": "grudu",
             "password": "118-TgBT-1407"
-        },
-        {
-            "hostname": "sqd",
-            "port": "sqddqs",
-            "username": "sqdsqd",
-            "password": "sdq"
         }
     ]
 }

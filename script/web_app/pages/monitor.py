@@ -23,6 +23,9 @@ port = config['settings']['port']
 username = config['settings']['username']
 password = config['settings']['password']"""
 
+
+print(dash.callback_context)
+
 with open('config.json',"r",encoding="utf-8") as f:
     data = json.load(f)
 
@@ -42,11 +45,11 @@ COLOR1 ='#272643'
 COLOR2 ='#2c698d'
 COLOR3 ='#ffffff'
 
-dash.register_page(__name__,path="/machine="+hostname)
+dash.register_page(__name__,path_template="/machine/<hostname_url>")
+
 
 layout = html.Div(children=[
     dcc.Location(id='url', refresh=False),
-    html.H1(children='Monitoring web application'),
     html.Div([
         html.Label('Hostname: '),
         dcc.Input(id='hostname', value=hostname, type='text'),
