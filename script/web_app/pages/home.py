@@ -1,23 +1,31 @@
 import json
 import time
 import dash
-from dash import Dash, html, dcc
+from dash import Dash, html, dcc,callback
 from dash.dependencies import Input, Output, State
 import client_class
 
-app = Dash(__name__)
+dash.register_page(__name__,path="/")
 
 with open('config.json',"r",encoding="utf-8") as f:
     data = json.load(f)
 
 machines=data['machines']
 
+list_machine = []
+for machine in machines:
+    try:
+        client = client_class.Client(machine["hostname"],machine["port"],machine["username"],machine["password"])
+        client.connection()
+        list_machine.append(html.Li(machine["hostname"]+":    Online"))
+    except Exception as e:
+        list_machine.append(html.Li(machine["hostname"]+":    Offline"))
+
+
 output = []
 
-output.append(dcc.Location(id='url',refresh=False))
-
-output.append(
-     html.Div([
+layout = html.Div(children=[
+    html.Div([
         html.Label('Hostname: '),
         dcc.Input(id='hostname', type='text'),
         html.Label('Port: '),
@@ -27,22 +35,13 @@ output.append(
         html.Label('Password: '),
         dcc.Input(id='password', type='password'),
         html.Button('Save', id='saveBtn'),
-    ])
-)
+    ]),
+    html.Ul(
+        list_machine,
+    id ="new_machines")
+])
 
-
-for machine in machines:
-    try:
-        client = client_class.Client(machine["hostname"],machine["port"],machine["username"],machine["password"])
-        client.connection()
-        output.append(html.Div(machine["hostname"]+"    Online"))
-    except Exception as e:
-        output.append(html.Div(machine["hostname"]+"    Offline"))
-output.append(html.Ul(id="new_machines"))
-
-app.layout = html.Div(children=output)
-
-@app.callback(
+@callback(
     [Output('new_machines','children')],
     [Input('saveBtn','n_clicks')],
     [
@@ -73,13 +72,10 @@ def update(n_click, input_hostname,input_port,input_username,input_password):
         list_li = []
         for machine_callback in machines_callback:
             try:
-                client = client_class.Client(machine_callback["hostname"],machine_callback["port"],machine_callback["username"],machine_callback["password"])
-                client.connection()
+                client_callback = client_class.Client(machine_callback["hostname"],machine_callback["port"],machine_callback["username"],machine_callback["password"])
+                client_callback.connection()
                 list_li.append(html.Li(machine_callback["hostname"]+"    Online"))
             except Exception as _:
                 list_li.append(html.Li(machine_callback["hostname"]+"    Offline"))
         print(list_li)
-        return list_li
-
-if __name__ == '__main__':
-    app.run_server(debug=True)
+        return [list_li]
