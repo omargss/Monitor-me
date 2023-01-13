@@ -6,7 +6,7 @@ import time
 import json
 import dash
 from dash import callback, html, dcc
-from dash.dependencies import Input, Output, State
+from dash.dependencies import Input, Output
 import plotly.express as px
 import plotly.graph_objects as go
 import pandas as pd
@@ -24,21 +24,21 @@ username = config['settings']['username']
 password = config['settings']['password']"""
 
 
-print(dash.callback_context)
+url=""
+index=0
 
 with open('config.json',"r",encoding="utf-8") as f:
     data = json.load(f)
 
 machines=data['machines']
-hostname=machines[0]['hostname']
-port = machines[0]['port']
-username = machines[0]['username']
-password=machines[0]['password']
+
+hostname=machines[index]['hostname']
+port = machines[index]['port']
+username = machines[index]['username']
+password=machines[index]['password']
 
 
 client = client_class.Client(hostname,port,username,password)
-
-client.connection()
 
 """ WEB DISPLAY """
 COLOR1 ='#272643'
@@ -50,17 +50,6 @@ dash.register_page(__name__,path_template="/machine/<hostname_url>")
 
 layout = html.Div(children=[
     dcc.Location(id='url', refresh=False),
-    html.Div([
-        html.Label('Hostname: '),
-        dcc.Input(id='hostname', value=hostname, type='text'),
-        html.Label('Port: '),
-        dcc.Input(id='port', value=port, type='text'),
-        html.Label('Username: '),
-        dcc.Input(id='username', value=username, type='text'),
-        html.Label('Password: '),
-        dcc.Input(id='password', value=password, type='password'),
-        html.Button('Save', id='saveBtn'),
-    ]),
     html.Div(id="p"),
     html.Br(),
     html.Br(),
@@ -98,37 +87,22 @@ layout = html.Div(children=[
 """ CALLBACKS """
 
 @callback(Output("ls-loading-output-1",'children'), [Input('url', 'pathname')])
-def loading(_):
+def loading(pathname):
     """ LOADING STATE"""
-    time.sleep(2)
-    return ''
+    url = pathname
+    index = int(url.removeprefix("/machine/"))
+    #time.sleep(0.5)
+    hostname=machines[index]['hostname']
+    port = machines[index]['port']
+    username = machines[index]['username']
+    password=machines[index]['password']
 
-@callback(
-    [Output('p','children')],
-    [Input('saveBtn','n_clicks')],
-    [
-        State('hostname','value'),
-        State('port','value'),
-        State('username','value'),
-        State('password','value')
-    ]
-)
-def update_config_json(n_click, input_hostname,input_port,input_username,input_password):
-    """ UPDATE JSON """
-    if n_click:
-        with open("config.json", "r",encoding="utf-8") as file:
-            config_json = json.load(file)
-            config_json["machines"].append({
-                "hostname": input_hostname,
-                "port": input_port,
-                "username": input_username,
-                "password": input_password
-        })
 
-        with open("config.json", "w",encoding="utf-8") as file:
-            json.dump(config_json, file, indent=4)
-        time.sleep(0.5)
-    return dash.no_update
+    client = client_class.Client(hostname,port,username,password)
+
+    client.connection()
+    return hostname
+
 
 @callback(Output('Memory_pie_chart', 'figure'),
                     Output('File_size_graph', 'figure'),
