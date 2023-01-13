@@ -13,13 +13,8 @@ with open('config.json',"r",encoding="utf-8") as f:
 machines=data['machines']
 
 output = []
-for machine in machines:
-    try:
-        client = client_class.Client(machine["hostname"],machine["port"],machine["username"],machine["password"])
-        client.connection()
-        output.append(html.Div(machine["hostname"]+"    Online"))
-    except Exception as e:
-        output.append(html.Div(machine["hostname"]+"    Offline"))
+
+output.append(dcc.Location(id='url',refresh=False))
 
 output.append(
      html.Div([
@@ -34,21 +29,30 @@ output.append(
         html.Button('Save', id='saveBtn'),
     ])
 )
-output.append(html.Div(id="p"))
+
+
+for machine in machines:
+    try:
+        client = client_class.Client(machine["hostname"],machine["port"],machine["username"],machine["password"])
+        client.connection()
+        output.append(html.Div(machine["hostname"]+"    Online"))
+    except Exception as e:
+        output.append(html.Div(machine["hostname"]+"    Offline"))
+output.append(html.Ul(id="new_machines"))
 
 app.layout = html.Div(children=output)
 
 @app.callback(
-    [Output('p','children')],
+    [Output('new_machines','children')],
     [Input('saveBtn','n_clicks')],
     [
         State('hostname','value'),
         State('port','value'),
         State('username','value'),
-        State('password','value')
+        State('password','value'),
     ]
 )
-def update_config_json(n_click, input_hostname,input_port,input_username,input_password):
+def update(n_click, input_hostname,input_port,input_username,input_password):
     """ UPDATE JSON """
     if n_click:
         with open("config.json", "r",encoding="utf-8") as file:
@@ -63,7 +67,19 @@ def update_config_json(n_click, input_hostname,input_port,input_username,input_p
         with open("config.json", "w",encoding="utf-8") as file:
             json.dump(config_json, file, indent=4)
         time.sleep(0.5)
-    return dash.no_update
+        with open('config.json',"r",encoding="utf-8") as f:
+            data_callback = json.load(f)
+        machines_callback=data_callback['machines']
+        list_li = []
+        for machine_callback in machines_callback:
+            try:
+                client = client_class.Client(machine_callback["hostname"],machine_callback["port"],machine_callback["username"],machine_callback["password"])
+                client.connection()
+                list_li.append(html.Li(machine_callback["hostname"]+"    Online"))
+            except Exception as _:
+                list_li.append(html.Li(machine_callback["hostname"]+"    Offline"))
+        print(list_li)
+        return list_li
 
 if __name__ == '__main__':
     app.run_server(debug=True)

@@ -191,7 +191,7 @@ def fig_click(click_data):
         raise dash.exceptions.PreventUpdate
     warn_list, emerg_list, alert_list, crit_list, error_list, info_list, notice_list, debug_list = functions.get_error_logs(
         client)
-    temp = ''
+    temp = []
     click = click_data["points"][0]["x"]
     if click == 'Error':
         temp = [html.Li(i) for i in error_list]
