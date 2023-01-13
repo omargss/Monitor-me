@@ -27,6 +27,8 @@ To run the docker image that contains our project, run the following commands :
 ```bash
 docker pull devops.telecomste.fr:5050/printerfaceadmin/2022-23/group8/image:latest
 ```
+then :
+
 ```bash
 docker run -p 8050:8050 devops.telecomste.fr:5050/printerfaceadmin/2022-23/group8/image:latest
 ```
