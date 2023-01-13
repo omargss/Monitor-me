@@ -17,10 +17,10 @@ i=0
 for machine in machines:
     try:
         client = client_class.Client(machine["hostname"],machine["port"],machine["username"],machine["password"])
-        list_machine.append(html.Li(children=[dcc.Link(machine["hostname"]+":    Online", href="machine/"+str(i)),html.Button("Delete",id="deleteBtn")]))
         client.connection()
+        list_machine.append(html.Li(children=[dcc.Link(machine["hostname"]+":    Online", href="machine/"+str(i)),html.Button("Delete",id="deleteBtn")]))
     except Exception as e:
-        list_machine.append(html.Li(children=[dcc.Link(machine["hostname"]+":    Offline", href="machine/"+str(i)),html.Button("Delete",id="deleteBtn")]))
+        list_machine.append(html.Li(children=[html.P(machine["hostname"]+":    Offline"),html.Button("Delete",id="deleteBtn")]))
     i= i+1
 
 output = []
@@ -66,7 +66,7 @@ def update(n_click, input_hostname,input_port,input_username,input_password):
 
         with open("config.json", "w",encoding="utf-8") as file:
             json.dump(config_json, file, indent=4)
-        time.sleep(0.5)
+        time.sleep(1)
         with open('config.json',"r",encoding="utf-8") as f:
             data_callback = json.load(f)
         machines_callback=data_callback['machines']
@@ -75,9 +75,9 @@ def update(n_click, input_hostname,input_port,input_username,input_password):
             try:
                 client_callback = client_class.Client(machine_callback["hostname"],machine_callback["port"],machine_callback["username"],machine_callback["password"])
                 client_callback.connection()
-                list_li.append(html.Li(machine_callback["hostname"]+"    Online"))
+                list_li.append(html.Li(children=[dcc.Link(machine_callback["hostname"]+":    Online", href="machine/"+str(i)),html.Button("Delete",id="deleteBtn")]))
             except Exception as _:
-                list_li.append(html.Li(machine_callback["hostname"]+"    Offline"))
+                list_li.append(html.Li(children=[html.P(machine_callback["hostname"]+":    Offline"),html.Button("Delete",id="deleteBtn")]))
         return [list_li]
     else:
         return dash.no_update

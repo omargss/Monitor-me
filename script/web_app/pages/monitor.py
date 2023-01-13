@@ -53,7 +53,8 @@ layout = html.Div(children=[
     html.Div(id="p"),
     html.Br(),
     html.Br(),
-    dcc.Loading(id="ls-loading-1",children=[html.Div(id="ls-loading-output-1")], type="default"),
+    dcc.Loading(id="ls-loading-1",children=[html.Div(id="ls-loading-output-1"),
+        dcc.Link("Go back home", href="/")], type="default"),
     html.Div(id='Display', children=[
     html.H2(children='Memory'),
     dcc.Graph(
@@ -89,19 +90,21 @@ layout = html.Div(children=[
 @callback(Output("ls-loading-output-1",'children'), [Input('url', 'pathname')])
 def loading(pathname):
     """ LOADING STATE"""
-    url = pathname
-    index = int(url.removeprefix("/machine/"))
-    #time.sleep(0.5)
-    hostname=machines[index]['hostname']
-    port = machines[index]['port']
-    username = machines[index]['username']
-    password=machines[index]['password']
+    if pathname != '/':
+        url = pathname
+        index = int(url.removeprefix("/machine/"))
+        hostname=machines[index]['hostname']
+        port = machines[index]['port']
+        username = machines[index]['username']
+        password=machines[index]['password']
 
 
-    client = client_class.Client(hostname,port,username,password)
+        client = client_class.Client(hostname,port,username,password)
 
-    client.connection()
-    return hostname
+        client.connection()
+        return hostname
+    else :
+        return dash.no_update
 
 
 @callback(Output('Memory_pie_chart', 'figure'),
