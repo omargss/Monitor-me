@@ -59,6 +59,6 @@ delivery :
     - docker build -t "$CI_REGISTRY_IMAGE" -f Dockerfile .
     - docker push "$CI_REGISTRY_IMAGE" 
 
-  only : 
-    refs:
-      - main
+  # only : 
+  #   refs:
+  #     - main
