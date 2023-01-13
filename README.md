@@ -25,18 +25,12 @@ To run this project all you need is to pull & run our Docker image.
 To run the docker image that contains our project, run the following commands :
 
 ```bash
-docker login
-```
-The username is: group8
-
-The password is: group8mdp
-
-```bash
 docker pull devops.telecomste.fr:5050/printerfaceadmin/2022-23/group8/image:latest
 ```
 ```bash
-docker run -p 8080:8080 devops.telecomste.fr:5050/printerfaceadmin/2022-23/group8/image:latest
+docker run -p 8050:8050 devops.telecomste.fr:5050/printerfaceadmin/2022-23/group8/image:latest
 ```
+Once you run these commands, go on this link : http://localhost:8050/ ; this shall show you the dashboards of our remote machines.
 
 ## Built With
 * Python
