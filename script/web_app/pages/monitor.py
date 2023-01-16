@@ -81,10 +81,11 @@ layout = html.Div(children=[
 
     dcc.Interval(
         id='interval-component',
-        interval=20*1000,  # in milliseconds
+        interval=10*1000,  # in milliseconds
         n_intervals=0
     )
 ])
+
 """ CALLBACKS """
 
 @callback(Output("ls-loading-output-1",'children'), [Input('url', 'pathname')])
@@ -102,6 +103,7 @@ def loading(pathname):
         client = client_class.Client(hostname,port,username,password)
 
         client.connection()
+        time.sleep(1)
         return hostname
     else :
         return dash.no_update

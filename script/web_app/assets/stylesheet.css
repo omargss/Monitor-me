@@ -1,7 +1,6 @@
 /* Fonts */
 
-@import url('https://fonts.googleapis.com/css?family=Open+Sans:300&display=swap');
-@import url('https://fonts.googleapis.com/css?family=Reenie+Beanie&display=swap');
+
 
 /* Basic */
 
@@ -37,12 +36,24 @@ h2 {
 	font-weight: 700;
 }
 #new_machines{
-    color: cyan;
-    cursor: pointer;
- 
+    color: cyan; 
+}
+li{
+    display:inline
+}
+a{
+    text-decoration: none;
+    color:rgb(57, 255, 255)
 }
 
 
+.online{
+    color:rgb(41, 182, 41);
+    cursor: pointer;
+}
+.offline{
+    color:red;
+}
 graph{
     background-color: #ebeae9;
 }

@@ -1,7 +1,7 @@
 import json
 import time
 import dash
-from dash import Dash, html, dcc,callback
+from dash import  html, dcc,callback
 from dash.dependencies import Input, Output, State
 import client_class
 
@@ -18,9 +18,9 @@ for machine in machines:
     try:
         client = client_class.Client(machine["hostname"],machine["port"],machine["username"],machine["password"])
         client.connection()
-        list_machine.append(html.Li(children=[html.P(str(i)+".  "), dcc.Link(machine["hostname"]+":    Online", href="machine/"+str(i))]))
+        list_machine.append(html.Li(children=[html.P(str(i)+".  "), dcc.Link(machine["hostname"]+":    Online",className="online", href="machine/"+str(i))]))
     except Exception as e:
-        list_machine.append(html.Li(children=[html.P(str(i)+".  "),html.P(machine["hostname"]+":    Offline")]))
+        list_machine.append(html.Li(children=[html.P(str(i)+".  "),html.P(machine["hostname"]+":    Offline",className="offline",)]))
     i= i+1
 
 nbMachine = i-1
@@ -38,13 +38,15 @@ layout = html.Div(children=[
         html.Label('Password: '),
         dcc.Input(id='password', type='password'),
         html.Button('Save', id='saveBtn',n_clicks=0),
+        html.Br(),
+        html.Br(),
         html.Label('Delete machine'),
         dcc.Input(id='numMachine',type='number',min='0'),
         html.Button('Delete', id ='deleteBtn', n_clicks=0)
     ]),
-    html.Ul(
-        list_machine,
-    id ="new_machines")
+    html.Div(id="machine",children=[
+            html.Ul(list_machine,id ="new_machines")
+    ])
 ])
 
 @callback(
@@ -88,9 +90,9 @@ def update(n_click_save,n_click_delete, input_hostname,input_port,input_username
                 try:
                     client_callback = client_class.Client(machine_callback["hostname"],machine_callback["port"],machine_callback["username"],machine_callback["password"])
                     client_callback.connection()
-                    list_li.append(html.Li(children=[html.P(str(i)+".  "), dcc.Link(machine_callback["hostname"]+":    Online", href="machine/"+str(i))]))
+                    list_li.append(html.Li(children=[html.P(str(i)+".  "), dcc.Link(machine_callback["hostname"]+":    Online", className="online",href="machine/"+str(i))]))
                 except Exception as _:
-                    list_li.append(html.Li(children=[html.P(str(i)+".  "), html.P(machine_callback["hostname"]+":    Offline")]))
+                    list_li.append(html.Li(children=[html.P(str(i)+".  "), html.P(machine_callback["hostname"]+":    Offline",className="offline")]))
                 i=i+1
             return [list_li]
         elif trigger['prop_id'] == 'deleteBtn.n_clicks':
@@ -109,9 +111,9 @@ def update(n_click_save,n_click_delete, input_hostname,input_port,input_username
                 try:
                     client_callback = client_class.Client(machine_callback["hostname"],machine_callback["port"],machine_callback["username"],machine_callback["password"])
                     client_callback.connection()
-                    list_li.append(html.Li(children=[html.P(str(i)+".  "), dcc.Link(machine_callback["hostname"]+":    Online", href="machine/"+str(i))]))
+                    list_li.append(html.Li(children=[html.P(str(i)+".  "), dcc.Link(machine_callback["hostname"]+":    Online" ,className="online", href="machine/"+str(i))]))
                 except Exception as _:
-                    list_li.append(html.Li(children=[html.P(str(i)+".  "), html.P(machine_callback["hostname"]+":    Offline")]))
+                    list_li.append(html.Li(children=[html.P(str(i)+".  "), html.P(machine_callback["hostname"]+":    Offline",className="offline")]))
                 i=i+1
             return [list_li]
     
