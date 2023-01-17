@@ -24,18 +24,18 @@ username = config['settings']['username']
 password = config['settings']['password']"""
 
 
-url=""
-index=0
+URL=""
+INDEX=0
 
 with open('config.json',"r",encoding="utf-8") as f:
     data = json.load(f)
 
 machines=data['machines']
 
-hostname=machines[index]['hostname']
-port = machines[index]['port']
-username = machines[index]['username']
-password=machines[index]['password']
+hostname=machines[INDEX]['hostname']
+port = machines[INDEX]['port']
+username = machines[INDEX]['username']
+password=machines[INDEX]['password']
 
 
 client = client_class.Client(hostname,port,username,password)
@@ -45,11 +45,11 @@ COLOR1 ='#272643'
 COLOR2 ='#2c698d'
 COLOR3 ='#ffffff'
 
-dash.register_page(__name__,path_template="/machine/<hostname_url>")
+dash.register_page(__name__,path_template="/machine/<hostname_URL>")
 
 
 layout = html.Div(children=[
-    dcc.Location(id='url', refresh=False),
+    dcc.Location(id='URL', refresh=False),
     html.Div(id="p"),
     html.Br(),
     html.Br(),
@@ -88,23 +88,22 @@ layout = html.Div(children=[
 
 """ CALLBACKS """
 
-@callback(Output("ls-loading-output-1",'children'), [Input('url', 'pathname')])
+@callback(Output("ls-loading-output-1",'children'), [Input('URL', 'pathname')])
 def loading(pathname):
     """ LOADING STATE"""
     if pathname != '/':
-        url = pathname
-        index = int(url.removeprefix("/machine/"))
-        hostname=machines[index]['hostname']
-        port = machines[index]['port']
-        username = machines[index]['username']
-        password=machines[index]['password']
+        index = int(URL.removeprefix("/machine/"))
 
+        hostname_=machines[index]['hostname']
+        port_ = machines[index]['port']
+        username_ = machines[index]['username']
+        password_=machines[index]['password']
 
-        client = client_class.Client(hostname,port,username,password)
+        client_ = client_class.Client(hostname_,port_,username_,password_)
 
-        client.connection()
+        client_.connection()
         time.sleep(1)
-        return hostname
+        return hostname_
     else :
         return dash.no_update
 
