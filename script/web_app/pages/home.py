@@ -1,3 +1,4 @@
+"""Module dash"""
 import json
 import time
 import dash
@@ -23,7 +24,7 @@ for machine in machines:
         list_machine.append(html.Li(children=[html.P(str(i)+".  "),html.P(machine["hostname"]+":    Offline",className="offline",)]))
     i= i+1
 
-nbMachine = i-1
+NB_MACHINE = i-1
 
 output = []
 
@@ -61,7 +62,7 @@ layout = html.Div(children=[
         State('numMachine','value')
     ]
 )
-def update(n_click_save,n_click_delete, input_hostname,input_port,input_username,input_password,num_machine):
+def update(input_hostname,input_port,input_username,input_password,num_machine):
     """ UPDATE JSON """
     ctx = dash.callback_context
     if not ctx.triggered:
@@ -81,39 +82,38 @@ def update(n_click_save,n_click_delete, input_hostname,input_port,input_username
             with open("config.json", "w",encoding="utf-8") as file:
                 json.dump(config_json, file, indent=4)
             time.sleep(1)
-            with open('config.json',"r",encoding="utf-8") as f:
-                data_callback = json.load(f)
+            with open('config.json',"r",encoding="utf-8") as f_bis:
+                data_callback = json.load(f_bis)
             machines_callback=data_callback['machines']
             list_li = []
-            i=0
+            iter = 0
             for machine_callback in machines_callback:
                 try:
                     client_callback = client_class.Client(machine_callback["hostname"],machine_callback["port"],machine_callback["username"],machine_callback["password"])
                     client_callback.connection()
-                    list_li.append(html.Li(children=[html.P(str(i)+".  "), dcc.Link(machine_callback["hostname"]+":    Online", className="online",href="machine/"+str(i))]))
+                    list_li.append(html.Li(children=[html.P(str(i)+".  "), dcc.Link(machine_callback["hostname"]+":    Online", className="online",href="machine/"+str(iter))]))
                 except Exception as _:
                     list_li.append(html.Li(children=[html.P(str(i)+".  "), html.P(machine_callback["hostname"]+":    Offline",className="offline")]))
-                i=i+1
+                iter=iter+1
             return [list_li]
         elif trigger['prop_id'] == 'deleteBtn.n_clicks':
             with open('config.json','r', encoding='utf-8') as json_file:
-                data = json.load(json_file)
-            del data['machines'][num_machine]
+                data_ = json.load(json_file)
+            del data_['machines'][num_machine]
             with open('config.json', 'w', encoding='utf-8') as json_file:
                 json.dump(data, json_file, indent=4)
-            
-            with open('config.json',"r",encoding="utf-8") as f:
-                data_callback = json.load(f)
+            with open('config.json',"r",encoding="utf-8") as f_ter:
+                data_callback = json.load(f_ter)
             machines_callback=data_callback['machines']
             list_li = []
-            i=0
+            iter=0
             for machine_callback in machines_callback:
                 try:
                     client_callback = client_class.Client(machine_callback["hostname"],machine_callback["port"],machine_callback["username"],machine_callback["password"])
                     client_callback.connection()
-                    list_li.append(html.Li(children=[html.P(str(i)+".  "), dcc.Link(machine_callback["hostname"]+":    Online" ,className="online", href="machine/"+str(i))]))
+                    list_li.append(html.Li(children=[html.P(str(i)+".  "), dcc.Link(machine_callback["hostname"]+":    Online" ,className="online", href="machine/"+str(iter))]))
                 except Exception as _:
                     list_li.append(html.Li(children=[html.P(str(i)+".  "), html.P(machine_callback["hostname"]+":    Offline",className="offline")]))
-                i=i+1
+                iter=iter+1
             return [list_li]
-    
+        return None
