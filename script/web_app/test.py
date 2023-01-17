@@ -1,7 +1,6 @@
 '''Fichier de Test des fonctions de l'interface'''
 import unittest
-from functions import AnalyzeLogs, analyze_error_logs
-
+from .functions import AnalyzeLogs, analyze_error_logs
 
 class FunctionsTestCase(unittest.TestCase):
     """Test case for the functions used in the web app"""
