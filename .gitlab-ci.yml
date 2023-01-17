@@ -24,7 +24,7 @@ coverage :
   script : 
     - cd script/web_app/
     - pwd
-    - python -m coverage run -m unittest /builds/printerfaceadmin/2022-23/group8/script/web_app/test.py
+    - python3 -m coverage run -m unittest /builds/printerfaceadmin/2022-23/group8/script/web_app/test.py
     - coverage report --fail-under=50
     - cd /
     
