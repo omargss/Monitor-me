@@ -6,8 +6,8 @@ RUN apk add py3-pandas
 RUN pip install dash
 RUN pip install paramiko
 
-COPY script /app/script/web_app
+COPY script /app/script
 
 EXPOSE 8080
 
-ENTRYPOINT ["python", "app.py"]
+ENTRYPOINT ["python", "/app/script/web_app/app.py"]
