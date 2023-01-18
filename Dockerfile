@@ -9,6 +9,6 @@ RUN pip install paramiko
 COPY script /app/script
 WORKDIR /app/script/web_app
 
-EXPOSE 8080
+EXPOSE 8050
 
 ENTRYPOINT ["python", "app.py"]
