@@ -20,7 +20,7 @@ pylint:
   script : 
     # - pylint -d C0301,R0911,R1705 script/web_app/*.py --fail-under=7
     - pylint -d C0301,R0911,R1705 script/web_app/app.py --fail-under=7
-    - pylint -d C0301,R0911,R1705 script/web_app/tes.py --fail-under=7
+    - pylint -d C0301,R0911,R1705 script/web_app/test.py --fail-under=7
  
 coverage :
   stage : coverage
