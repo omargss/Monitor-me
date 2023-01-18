@@ -10,4 +10,4 @@ COPY script /app/script/web_app
 
 EXPOSE 8080
 
-ENTRYPOINT ["python", "/app/script/web_app/app.py"]
+ENTRYPOINT ["python", "app.py"]
