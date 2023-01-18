@@ -56,9 +56,3 @@ Here are some screenshots to illustrate how the Server Monitoring tool works :
 ## License
 Télécom Saint-Etienne
 
-## Authors
-- Mathis Thuel-Chassaigne
-- Cyril Bier
-- Grégoire Naz
-- Cédric Thong
-- Omar El Gribes
