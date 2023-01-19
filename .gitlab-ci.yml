@@ -26,7 +26,6 @@ coverage :
     - pwd
     - python3 -m coverage run -m unittest /builds/printerfaceadmin/2022-23/group8/script/web_app/test.py
     - coverage report --fail-under=50
-    - cd /
     - coverage xml
   coverage: '/(?i)total.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/'
   artifacts:
