@@ -1,5 +1,4 @@
-# Group8
-## Welcome on our project
+# Welcome on our project
 ## Description
 This application is a Server Monitoring tool :
 * Connecting to the machine "to be monitored" through SSH.
@@ -62,10 +61,6 @@ Home page of the app, here you can add, delete and choose a machine to monitor
 * Python
 * Docker
 * Alpine
-
-## Badges
-We added badges in our project description to get the status of a stage and to show its progress, for instance if the pipeline passed and the coverage percentage.
-
 
 ## License
 Télécom Saint-Etienne
